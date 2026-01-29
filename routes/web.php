@@ -3,10 +3,36 @@
 use App\Http\Controllers\Admin\AdminAuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Front\FrontController;
+use App\Http\Controllers\User\UserController;
 
-Route::get('/', function () {
-    return view('welcome');
+
+Route::get('/',[FrontController::class,'home'])->name('home');
+Route::get('/about',[FrontController::class,'about'])->name('about');
+Route::get('/registration',[FrontController::class,'registration'])->name('registration');
+Route::get('/login',[FrontController::class,'login'])->name('login');
+Route::post('/login',[FrontController::class,'login_submit'])->name('login_submit');
+
+Route::get('/forget-password',[FrontController::class,'forget_password'])->name('forget_password');
+Route::post('/registration',[FrontController::class,'registration_submit'])->name('registration_submit');
+Route::get('/registration-verify-email/{email}/{token}', action: [FrontController::class, 'registration_verify'])->name('registration_verify');
+Route::get('/logout', [FrontController::class,'logout'])->name('logout');
+
+
+// User
+// User
+Route::middleware('auth')->prefix('user')->group(function () { 
+    Route::get('/dashboard',[UserController::class,'dashboard'])->name('user_dashboard'); // İsmi 'user_dashboard' yapmak karışıklığı önler
+    
+    // EKSİK OLAN SATIR BU:
+    Route::get('/logout', [UserController::class, 'logout'])->name('user_logout'); 
 });
+
+
+
+
+
+
 
 
 Route::middleware('admin')->prefix('admin')->group(callback: function () {

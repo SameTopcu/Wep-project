@@ -1,0 +1,121 @@
+<?php
+
+namespace App\Http\Controllers\Front;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Websitemail;
+use Illuminate\Support\Facades\Auth;
+
+
+class Frontcontroller extends Controller
+{
+    public function home(){
+        return view("front.home");
+    }
+
+    public function about(){
+        return view("front.about");
+    }
+
+    public function registration(){
+        return view("front.registration");
+    }
+
+    public function registration_submit(Request $request) {
+        // 1. Validasyon: Email'in benzersiz (unique) olduğunu kontrol et
+        $request->validate([
+            "name" => "required",
+            "email" => "required|email|unique:users,email",
+            "password" => "required|min:6",
+            "retype_password" => "required|same:password",
+        ], [
+            // Türkçe hata mesajları (İsteğe bağlı)
+            "email.unique" => "Bu email adresi zaten sistemde kayıtlı.",
+            "retype_password.same" => "Şifreler birbiriyle uyuşmuyor."
+        ]);
+    
+        // 2. Güvenli Token Oluşturma
+        $token = hash('sha256', time());
+    
+        // 3. Kullanıcı Kaydı
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password); // bcrypt yerine Hash::make daha standarttır
+        $user->token = $token;
+        $user->status = 0; // Kullanıcıyı başlangıçta onaylanmamış (pasif) yapıyoruz
+        $user->save();
+    
+        // 4. Doğrulama Linki Oluşturma
+        // Not: web.php dosyasında bu rotanın parametrelerini kontrol etmelisin
+        $verification_link = route('registration_verify', ['email' => $request->email, 'token' => $token]);
+    
+        // 5. E-posta Gönderimi
+        $subject = "User Account Verification";
+        $message = 'Please click the following link to verify your email address:<br>';
+        $message .= '<a href="'.$verification_link.'">Verify Email</a>';
+    
+        try {
+            Mail::to($request->email)->send(new Websitemail($subject, $message));
+        } catch (\Exception $e) {
+            // Mail gitmezse kullanıcıyı bilgilendirebilir veya kaydı silebilirsin
+            return redirect()->back()->with('error', 'Mail gönderilirken bir sorun oluştu.');
+        }
+    
+        return redirect()->route('login')->with('success', 'Registration is successful, but you have to verify your address to login so please check your email to confirm the verification link.');
+    }
+    public function registration_verify($email,$token){
+         $user = User::where('token',$token)->where('email',$email)->first();
+         if(!$user) {
+             return redirect()->route('login');
+         }
+         $user->token = '';
+         $user->status = 1;
+         $user->update();
+     
+         return redirect()->route('login')->with('success', 'Your email is verified. You can login now.');
+    }
+    public function login(){
+        return view ("front.login");
+    }
+
+    public function login_submit(Request $request){
+        $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ], [
+            'email.required' => 'Email adresi gereklidir.',
+            'email.email' => 'Geçerli bir email adresi giriniz.',
+            'password.required' => 'Şifre gereklidir.',
+        ]);
+    
+        $data = [
+            'email' => $request->email,
+            'password' => $request->password,
+            'status'=>1,
+        ];
+    
+        if(Auth::guard('web')->attempt($data)) {
+            return redirect()->route('user_dashboard')->with('success', 'Giriş başarılı!');
+        } else {
+            return redirect()->route('login')->with('error','Girdiğiniz bilgiler hatalı! Lütfen tekrar deneyiniz!')->withInput();
+            
+        } 
+    }
+
+    public function forget_password(){
+        return view ("front.forget-password");
+    }
+
+
+
+    public function logout(){
+        Auth::guard('web')->logout();
+        return redirect()->route('login')->with('success','Logout is successfull');
+    }
+
+}
