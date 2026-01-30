@@ -103,19 +103,78 @@ class Frontcontroller extends Controller
             return redirect()->route('user_dashboard')->with('success', 'Giriş başarılı!');
         } else {
             return redirect()->route('login')->with('error','Girdiğiniz bilgiler hatalı! Lütfen tekrar deneyiniz!')->withInput();
-            
+
         } 
     }
-
-    public function forget_password(){
-        return view ("front.forget-password");
-    }
-
 
 
     public function logout(){
         Auth::guard('web')->logout();
         return redirect()->route('login')->with('success','Logout is successfull');
     }
+
+    public function forget_password(){
+        return view('front.forget-password');
+    }
+    public function forget_password_submit(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+    
+        $user = User::where('email',$request->email)->first();
+        if(!$user) {
+            return redirect()->back()->with('error','Email is not found');
+        }
+    
+        $token = hash('sha256',time());
+        $user->token = $token;
+        $user->update();
+    
+        $reset_link=route('reset_password',['token'=> $token,'email'=>$request->email]);
+        $subject = "Password Reset";
+        $message = "To reset password, please click on the link below:<br>";
+        $message .= "<a href='".$reset_link."'>Click Here</a>";
+    
+        Mail::to($request->email)->send(new Websitemail($subject,$message));
+    
+        return redirect()->back()->with('success','We have sent a password reset link to your email. Please check your email.');
+    }
+
+
+    public function reset_password(string $token, string $email){
+        $user = User::where('email', $email)->where('token', $token)->first();
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Invalid or expired reset link.');
+        }
+
+        return view('front.reset-password', compact('token', 'email'));
+    }
+
+    public function reset_password_submit(Request $request, string $token, string $email)
+    {
+        $request->validate([
+            'password' => ['required', 'min:6'],
+            'retype_password' => ['required', 'same:password'],
+        ], [
+            'password.required' => 'Şifre gereklidir.',
+            'confirm_password.required' => 'Şifre doğrulama gereklidir.',
+            'confirm_password.same' => 'Şifreler uyuşmuyor.',
+        ]);
+
+        $user = User::where('email', $email)->where('token', $token)->first();
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Geçersiz veya süresi dolmuş link.');
+        }
+    
+        // DÜZELTME: Hash::make() KALDIRILDI.
+        // User modelindeki 'casts' özelliği bunu otomatik şifreleyecek.
+        $user->password = $request->password; 
+        
+        $user->token = ''; 
+        $user->save();
+    
+        return redirect()->route('login')->with('success', 'Şifreniz başarıyla güncellendi. Giriş yapabilirsiniz.');
+}
 
 }
