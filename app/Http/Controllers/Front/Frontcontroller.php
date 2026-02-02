@@ -9,12 +9,13 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Websitemail;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\Slider;
 
 class Frontcontroller extends Controller
 {
     public function home(){
-        return view("front.home");
+        $sliders = Slider::get();
+        return view("front.home",compact('sliders'));
     }
 
     public function about(){
