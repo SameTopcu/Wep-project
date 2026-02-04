@@ -10,16 +10,18 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\Websitemail;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Slider;
-
+use App\Models\WelcomeItem;
 class Frontcontroller extends Controller
 {
     public function home(){
         $sliders = Slider::get();
-        return view("front.home",compact('sliders'));
+        $welcome_item = WelcomeItem::where('id', 1)->first();
+        return view("front.home",compact('sliders','welcome_item'));
     }
 
     public function about(){
-        return view("front.about");
+        $welcome_item = WelcomeItem::where('id',1)->first();
+        return view("front.about",compact('welcome_item'));
     }
 
     public function registration(){
