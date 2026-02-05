@@ -56,71 +56,49 @@
         <div class="why-choose pt_70">
             <div class="container">
                 <div class="row">
+                     @foreach ($features as $feature)
                     <div class="col-md-4">
                         <div class="inner pb_70">
                             <div class="icon">
-                                <i class="fas fa-briefcase"></i>
+                                <i class="{{ $feature->icon }}"></i>
                             </div>
                             <div class="text">
-                                <h2>Explore Destinations</h2>
+                                <h2>{{ $feature->header }}</h2>
                                 <p>
-                                    Discover amazing places to visit, from bustling cities to serene beaches, and plan your perfect adventure with our expert guides.
+                                    {{ $feature->description }}
                                 </p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="inner pb_70">
-                            <div class="icon">
-                                <i class="fas fa-search"></i>
-                            </div>
-                            <div class="text">
-                                <h2>Custom Travel Packages</h2>
-                                <p>
-                                    Create custom travel packages designed to your accommodations, activities & transportation for a smooth journey.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="inner pb_70">
-                            <div class="icon">
-                                <i class="fas fa-share-alt"></i>
-                            </div>
-                            <div class="text">
-                                <h2>Travel Deals & Discounts</h2>
-                                <p>
-                                    Take advantage of our exclusive travel deals and discounts, ensuring you get the best value for your dream vacation.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach              
                 </div>
             </div>
         </div>
 
 
+        @if($counter_item->status == 'Show')
         <div class="counter-section pt_70 pb_70">
             <div class="container">
                 <div class="row counter-items">
                     <div class="col-md-3 counter-item">
-                        <div class="counter">40</div>
-                        <div class="text">Destinations</div>
+                        <div class="counter">{{ $counter_item->item1_number }}</div>
+                        <div class="text">{{ $counter_item->item1_text }}</div>
                     </div>
                     <div class="col-md-3 counter-item">
-                        <div class="counter">1200</div>
-                        <div class="text">Clients</div>
+                        <div class="counter">{{ $counter_item->item2_number }}</div>
+                        <div class="text">{{ $counter_item->item2_text }}</div>
                     </div>
                     <div class="col-md-3 counter-item">
-                        <div class="counter">130</div>
-                        <div class="text">Packages</div>
+                        <div class="counter">{{ $counter_item->item3_number }}</div>
+                        <div class="text">{{ $counter_item->item3_text }}</div>
                     </div>
                     <div class="col-md-3 counter-item">
-                        <div class="counter">60</div>
-                        <div class="text">Feedbacks</div>
+                        <div class="counter">{{ $counter_item->item4_number }}</div>
+                        <div class="text">{{ $counter_item->item4_text }}</div>
                     </div>
                 </div>
             </div>
         </div>
+        @endif
 
 @endsection

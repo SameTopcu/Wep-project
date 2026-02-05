@@ -7,6 +7,10 @@ use App\Http\Controllers\Admin\AdminSliderController;
 use App\Http\Controllers\Front\FrontController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Admin\AdminWelcomeItemController;
+use App\Http\Controllers\Admin\AdminFeatureController;
+use App\Http\Controllers\Admin\AdminCounterItemController;
+use App\Http\Controllers\Admin\AdminTestimonialController;
+use App\Http\Controllers\Admin\AdminTeamMemberController;
 
 Route::get('/',[FrontController::class,'home'])->name('home');
 Route::get('/about',[FrontController::class,'about'])->name('about');
@@ -73,6 +77,37 @@ Route::prefix('admin')->group(callback: function () {
     Route::get('/slider/delete/{id}',[AdminSliderController::class,'delete'])->name('admin_slider_delete');
     Route::get('/welcome-item/index',[AdminWelcomeItemController::class,'index'])->name('admin_welcome_item_index');
     Route::post('/welcome-item/update',[AdminWelcomeItemController::class,'update'])->name('admin_welcome_item_update');
+
+
+    //features routes : 
+    Route::get('/feature/index',[AdminFeatureController::class,'index'])->name('admin_feature_index');
+    Route::get('/feature/create',[AdminFeatureController::class,'create'])->name('admin_feature_create');
+    Route::post('/feature/create',[AdminFeatureController::class,'create_submit'])->name('admin_feature_create_submit');
+    Route::get('/feature/edit/{id}',[AdminFeatureController::class,'edit'])->name('admin_feature_edit');
+    Route::post('/feature/edit/{id}',[AdminFeatureController::class,'edit_submit'])->name('admin_feature_edit_submit');
+    Route::get('/feature/delete/{id}',[AdminFeatureController::class,'delete'])->name('admin_feature_delete');
+
+
+    //counter routes : 
+    Route::get('/counter-item/index',[AdminCounterItemController::class,'index'])->name('admin_counter_index');
+    Route::post('/counte-item/update',[AdminCounterItemController::class,'update'])->name('admin_counter_update');
+
+    //testimonial routes : 
+    Route::get('/testimonial/index',[AdminTestimonialController::class,'index'])->name('admin_testimonial_index');
+    Route::get('/testimonial/create',[AdminTestimonialController::class,'create'])->name('admin_testimonial_create');
+    Route::post('/testimonial/create',[AdminTestimonialController::class,'create_submit'])->name('admin_testimonial_create_submit');
+    Route::get('/testimonial/edit/{id}',[AdminTestimonialController::class,'edit'])->name('admin_testimonial_edit');
+    Route::post('/testimonial/edit/{id}',[AdminTestimonialController::class,'edit_submit'])->name('admin_testimonial_edit_submit');
+    Route::get('/testimonial/delete/{id}',[AdminTestimonialController::class,'delete'])->name('admin_testimonial_delete');
+
+    //team member routes : 
+    Route::get('/team-member/index',[AdminTeamMemberController::class,'index'])->name('admin_team_member_index');
+    Route::get('/team-member/create',[AdminTeamMemberController::class,'create'])->name('admin_team_member_create');
+    Route::post('/team-member/create',[AdminTeamMemberController::class,'create_submit'])->name('admin_team_member_create_submit');
+    Route::get('/team-member/edit/{id}',[AdminTeamMemberController::class,'edit'])->name('admin_team_member_edit');
+    Route::post('/team-member/edit/{id}',[AdminTeamMemberController::class,'edit_submit'])->name('admin_team_member_edit_submit');
+    Route::get('/team-member/delete/{id}',[AdminTeamMemberController::class,'delete'])->name('admin_team_member_delete');   
+
 
 
 

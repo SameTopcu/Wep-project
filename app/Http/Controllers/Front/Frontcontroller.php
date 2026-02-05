@@ -11,17 +11,26 @@ use App\Mail\Websitemail;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Slider;
 use App\Models\WelcomeItem;
+use App\Models\Feature;
+use App\Models\CounterItem;
+use App\Models\Testimonial;
+use App\Models\TeamMember;
 class Frontcontroller extends Controller
 {
     public function home(){
         $sliders = Slider::get();
+        $counter_item = CounterItem::where('id', 1)->first();
         $welcome_item = WelcomeItem::where('id', 1)->first();
-        return view("front.home",compact('sliders','welcome_item'));
+        $features = Feature::get();
+        $testimonials = Testimonial::get();
+        return view("front.home",compact('sliders','welcome_item','features','counter_item','testimonials'));
     }
 
     public function about(){
         $welcome_item = WelcomeItem::where('id',1)->first();
-        return view("front.about",compact('welcome_item'));
+        $features = Feature::get();
+        $counter_item = CounterItem::where('id', 1)->first();
+        return view("front.about",compact('welcome_item','features','counter_item'));
     }
 
     public function registration(){
@@ -179,5 +188,7 @@ class Frontcontroller extends Controller
     
         return redirect()->route('login')->with('success', 'Şifreniz başarıyla güncellendi. Giriş yapabilirsiniz.');
 }
+
+
 
 }
