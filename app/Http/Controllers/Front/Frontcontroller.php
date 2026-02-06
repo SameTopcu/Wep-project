@@ -187,8 +187,17 @@ class Frontcontroller extends Controller
         $user->save();
     
         return redirect()->route('login')->with('success', 'Şifreniz başarıyla güncellendi. Giriş yapabilirsiniz.');
-}
+    }
 
+    public function team_members(){
+        $team_members = TeamMember::paginate(4);
+        return view('front.team_members',compact('team_members'));
+    }
+
+    public function team_member($slug){
+        $team_member = TeamMember::where('slug',$slug)->first();
+        return view('front.team_member',compact('team_member'));
+    }
 
 
 }

@@ -14,6 +14,8 @@ use App\Http\Controllers\Admin\AdminTeamMemberController;
 
 Route::get('/',[FrontController::class,'home'])->name('home');
 Route::get('/about',[FrontController::class,'about'])->name('about');
+Route::get('/team-members',[FrontController::class,'team_members'])->name('team_members');
+Route::get('/team-member/{slug}',[FrontController::class,'team_member'])->name('team_member');
 Route::get('/registration',[FrontController::class,'registration'])->name('registration');
 Route::get('/login',[FrontController::class,'login'])->name('login');
 Route::post('/login',[FrontController::class,'login_submit'])->name('login_submit');
