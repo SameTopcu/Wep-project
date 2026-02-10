@@ -14,7 +14,10 @@ use App\Models\WelcomeItem;
 use App\Models\Feature;
 use App\Models\CounterItem;
 use App\Models\Testimonial;
+use App\Models\Faq;
 use App\Models\TeamMember;
+use App\Models\Post;
+use App\Models\BlogCategories;
 class Frontcontroller extends Controller
 {
     public function home(){
@@ -23,7 +26,8 @@ class Frontcontroller extends Controller
         $welcome_item = WelcomeItem::where('id', 1)->first();
         $features = Feature::get();
         $testimonials = Testimonial::get();
-        return view("front.home",compact('sliders','welcome_item','features','counter_item','testimonials'));
+        $posts = Post::with('blog_category')->orderBy('id','desc')->get()->take(3);
+        return view("front.home",compact('sliders','welcome_item','features','counter_item','testimonials','posts'));
     }
 
     public function about(){
@@ -199,5 +203,28 @@ class Frontcontroller extends Controller
         return view('front.team_member',compact('team_member'));
     }
 
+    public function faq(){
+        $faqs = Faq::get();
+        return view('front.faq',compact('faqs'));
+    }
+
+    public function blog(){
+        $posts = Post::with('blog_category')->paginate(4);
+        return view('front.blog',compact('posts'));
+    }
+
+    public function post($slug){
+        $categories = BlogCategories::orderBy('name','asc')->get();
+        $post = Post::where('slug',$slug)->first();
+        $latest_posts = Post::with('blog_category')->orderBy('id','desc')->get()->take(5);
+        return view('front.post',compact('post','categories','latest_posts'));
+    }
+    
+    public function category($slug){
+
+        $category = BlogCategories::where('slug',$slug)->first();
+        $posts = Post::where('blog_category_id',$category->id)->orderBy('id','desc')->paginate(9);
+        return view('front.category',compact('posts','category'));
+    }
 
 }
