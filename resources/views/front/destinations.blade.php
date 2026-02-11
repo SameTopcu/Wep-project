@@ -2,17 +2,15 @@
 
 @section('main_content')
 
-
-
         <div class="page-top" style="background-image: url('{{ asset('uploads/banner.jpg') }}')">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <h2>Blog</h2>
+                        <h2>Destinations</h2>
                         <div class="breadcrumb-container">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>
-                                <li class="breadcrumb-item active">Blog</li>
+                                <li class="breadcrumb-item active">Destinations</li>
                             </ol>
                         </div>
                     </div>
@@ -20,39 +18,34 @@
             </div>
         </div>
 
-    <div class="blog pt_70 pb_70">
-        <div class="container">
-            <div class="row">
-                    @foreach ($posts as $post)
-                    <div class="col-lg-4 col-md-6">
-                        <div class="item pb_70">
+        <div class="destination pt_70 pb_50">
+            <div class="container">
+                <div class="row">
+                    @foreach ($destinations as $destination)
+                    <div class="col-lg-3 col-md-6">
+                        <div class="item pb_25">
                             <div class="photo">
-                                <img src="uploads/blog-1.jpg" alt="" />
+                                <a href="{{ route('destination',$destination->slug) }}"><img src="{{asset('uploads/'.$destination->featured_photo)}}" alt=""></a>
                             </div>
                             <div class="text">
                                 <h2>
-                                    <a href="{{route('post',$post->slug)}}">{{$post->title}}</a>
+                                    <a href="{{ route('destination',$destination->slug) }}">{{$destination->name}}</a>
                                 </h2>
-                                <div class="short-des">
-                                    <p>
-                                        {!! $post->short_description !!}
-                                    </p>
-                                </div>
-                                <div class="button-style-2 mt_20">
-                                    <a href="{{route('post',$post->slug)}}">Read More</a>
-                                </div>
                             </div>
                         </div>
                     </div>
                     @endforeach
-            </div>                     
+                </div>
+            </div>
         </div>
-    </div>
+
     <div class="container pb_70">
         <div class="row">
             <div class="col-md-12 d-flex justify-content-center">
-                {{ $posts->links() }}
+                {{ $destinations->links() }}
             </div>
         </div>
     </div>
+
+
 @endsection

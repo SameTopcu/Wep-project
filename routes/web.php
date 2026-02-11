@@ -14,7 +14,7 @@ use App\Http\Controllers\Admin\AdminTeamMemberController;
 use App\Http\Controllers\Admin\AdminFaqController;
 use App\Http\Controllers\Admin\AdminBlogController;
 use App\Http\Controllers\Admin\AdminPostController;
-
+use App\Http\Controllers\Admin\AdminDestinationController;
 
 Route::get('/',[FrontController::class,'home'])->name('home');
 Route::get('/about',[FrontController::class,'about'])->name('about');
@@ -27,7 +27,8 @@ Route::get('/faq',[FrontController::class,'faq'])->name('faq');
 Route::get('/blog',[FrontController::class,'blog'])->name('blog');
 Route::get('/post/{slug}',[FrontController::class,'post'])->name('post');
 Route::get('/category/{slug}',[FrontController::class,'category'])->name('category');
-
+Route::get('/destinations',[FrontController::class,'destinations'])->name('destinations');
+Route::get('/destination/{slug}',[FrontController::class,'destination'])->name('destination');
 
 Route::get('/forget-password',[FrontController::class,'forget_password'])->name('forget_password');
 Route::post('/forget_password',action: [FrontController::class,'forget_password_submit'])->name('forget_password_submit');
@@ -144,6 +145,15 @@ Route::prefix('admin')->group(callback: function () {
     Route::get('/post/edit/{id}',[AdminPostController::class,'edit'])->name('admin_post_edit');
     Route::post('/post/edit/{id}',[AdminPostController::class,'edit_submit'])->name('admin_post_edit_submit');
     Route::get('/post/delete/{id}',[AdminPostController::class,'delete'])->name('admin_post_delete');
+
+
+    //destination routes : 
+    Route::get('/destination/index',[AdminDestinationController::class,'index'])->name('admin_destination_index');
+    Route::get('/destination/create',[AdminDestinationController::class,'create'])->name('admin_destination_create');
+    Route::post('/destination/create',[AdminDestinationController::class,'create_submit'])->name('admin_destination_create_submit');
+    Route::get('/destination/edit/{id}',[AdminDestinationController::class,'edit'])->name('admin_destination_edit');
+    Route::post('/destination/edit/{id}',[AdminDestinationController::class,'edit_submit'])->name('admin_destination_edit_submit');
+    Route::get('/destination/delete/{id}',[AdminDestinationController::class,'delete'])->name('admin_destination_delete');
 
 });
 

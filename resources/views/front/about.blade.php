@@ -1,7 +1,7 @@
 @extends('front.layout.master')
 
 @section('main_content')
-<div class="page-top" style="background-image: url('uploads/banner.jpg')">
+<div class="page-top" style="background-image: url('{{ asset('uploads/banner.jpg') }}')">
     
             <div class="container">
                 <div class="row">
@@ -40,7 +40,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="right-side" style="background-image: url({{ asset('uploads/'.$welcome_item->photo) }});">
+                                    <div class="right-side" style="background-image: url('{{ asset('uploads/'.$welcome_item->photo) }}')">
                                         <a class="video-button" href="https://www.youtube.com/watch?v={{ $welcome_item->video }}"><span></span></a>
                                     </div>
                                 </div>

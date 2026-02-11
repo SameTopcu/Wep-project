@@ -18,6 +18,7 @@ use App\Models\Faq;
 use App\Models\TeamMember;
 use App\Models\Post;
 use App\Models\BlogCategories;
+use App\Models\Destination;
 class Frontcontroller extends Controller
 {
     public function home(){
@@ -26,8 +27,9 @@ class Frontcontroller extends Controller
         $welcome_item = WelcomeItem::where('id', 1)->first();
         $features = Feature::get();
         $testimonials = Testimonial::get();
+        $destinations = Destination::orderBy('view_count','desc')->get()->take(8);
         $posts = Post::with('blog_category')->orderBy('id','desc')->get()->take(3);
-        return view("front.home",compact('sliders','welcome_item','features','counter_item','testimonials','posts'));
+        return view("front.home",compact('sliders','welcome_item','features','counter_item','testimonials','posts','destinations'));
     }
 
     public function about(){
@@ -225,6 +227,19 @@ class Frontcontroller extends Controller
         $category = BlogCategories::where('slug',$slug)->first();
         $posts = Post::where('blog_category_id',$category->id)->orderBy('id','desc')->paginate(9);
         return view('front.category',compact('posts','category'));
+    }
+
+
+    public function destinations(){
+        $destinations = Destination::orderBy('id','asc')->paginate(20);
+        return view('front.destinations',compact('destinations'));
+    }
+
+    public function destination($slug){
+        $destination = Destination::where('slug',$slug)->first();
+        $destination->view_count = $destination->view_count + 1;
+        $destination->update();
+        return view('front.destination',compact('destination'));
     }
 
 }
