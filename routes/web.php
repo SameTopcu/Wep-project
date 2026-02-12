@@ -30,6 +30,8 @@ Route::get('/category/{slug}',[FrontController::class,'category'])->name('catego
 Route::get('/destinations',[FrontController::class,'destinations'])->name('destinations');
 Route::get('/destination/{slug}',[FrontController::class,'destination'])->name('destination');
 
+
+
 Route::get('/forget-password',[FrontController::class,'forget_password'])->name('forget_password');
 Route::post('/forget_password',action: [FrontController::class,'forget_password_submit'])->name('forget_password_submit');
 
@@ -154,6 +156,17 @@ Route::prefix('admin')->group(callback: function () {
     Route::get('/destination/edit/{id}',[AdminDestinationController::class,'edit'])->name('admin_destination_edit');
     Route::post('/destination/edit/{id}',[AdminDestinationController::class,'edit_submit'])->name('admin_destination_edit_submit');
     Route::get('/destination/delete/{id}',[AdminDestinationController::class,'delete'])->name('admin_destination_delete');
+
+    //destination photos routes : 
+    Route::get('/destination_photos/{id}',[AdminDestinationController::class,'destination_photos'])->name('destination_photos');
+    Route::post('/destination-photo-submit/{id}',[AdminDestinationController::class,'destination_photo_submit'])->name('destination_photo_submit');
+    Route::get('/destination-photo-delete/{id}',[AdminDestinationController::class,'destination_photo_delete'])->name('destination_photo_delete');
+
+
+    //destination videos routes : 
+    Route::get('/destination-videos/{id}',[AdminDestinationController::class,'destination_videos'])->name('destination_videos');
+    Route::post('/destination-video-submit/{id}',[AdminDestinationController::class,'destination_video_submit'])->name('destination_video_submit');
+    Route::get('/destination-video-delete/{id}',[AdminDestinationController::class,'destination_video_delete'])->name('destination_video_delete');
 
 });
 

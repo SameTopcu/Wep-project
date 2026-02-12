@@ -34,7 +34,8 @@
                                                 <tr>
                                                     <th>SL</th>
                                                     <th>Featured Photo</th>
-                                                    <th>Name</th>                                                
+                                                    <th>Name</th>  
+                                                    <th>Galery</th>                                              
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -48,6 +49,10 @@
                                                         <img src="{{ asset('uploads/'.$destination->featured_photo) }}" alt="" class="w_100">
                                                     </td>
                                                     <td>{{ $destination->name }}</td>
+                                                    <td>
+                                                        <a href="{{ route('destination_photos',$destination->id ) }}" class="btn btn-primary btn-sm">Photo Gallery</a>
+                                                        <a href="{{ route('destination_videos',$destination->id) }}" class="btn btn-primary btn-sm">Video Gallery</a>
+                                                    </td>
                                                     <td class="pt_10 pb_10">
                                                         <div class="d-flex gap-2">
                                                             <a href="{{ route('admin_destination_edit',$destination->id) }}" class="btn btn-primary btn-sm">

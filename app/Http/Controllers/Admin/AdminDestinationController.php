@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Destination;
+use App\Models\DestinationPhoto;
+use App\Models\DestinationVideo;
 class AdminDestinationController extends Controller
 {
     public function index(){
@@ -102,6 +104,17 @@ class AdminDestinationController extends Controller
 
     public function delete($id)
     {
+    
+    $total_photos=DestinationPhoto::where('destination_id',$id)->count();
+    
+    if($total_photos>0){
+        return redirect()->route('admin_destination_index')->with('error','Destination has photos. So, it cannot be deleted.');
+    }
+
+    $total_videos=DestinationVideo::where('destination_id',$id)->count();
+    if($total_videos>0){
+        return redirect()->route('admin_destination_index')->with('error','Destination has videos. So, it cannot be deleted.');
+    }
     $destination = Destination::findOrFail($id);
 
     if($destination->featured_photo && file_exists(public_path('uploads/'.$destination->featured_photo))) {
@@ -114,4 +127,69 @@ class AdminDestinationController extends Controller
         ->route('admin_destination_index')
         ->with('success', 'Destination is Deleted Successfully');
     }
+    
+    public function destination_photos($id){
+        
+        $destination_photos=DestinationPhoto::where('destination_id',$id)->get();
+        $destination = Destination::where('id',$id)->first(); 
+        return view('admin.destination.photos',compact('destination','destination_photos'));
+    }
+
+    public function destination_photo_submit(Request $request, $id)
+    {
+        $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $final_name = 'destination_' . time() . '.' . $request->photo->extension();
+        $request->photo->move(public_path('uploads'), $final_name);
+
+        $obj = new DestinationPhoto();
+        $obj->destination_id = $id;
+        $obj->photo = $final_name;
+        $obj->save();
+        return redirect()->route('destination_photos',$id)->with('success','Photo Uploaded Successfully');
+    }
+
+    public function destination_photo_delete($id)
+    {
+        $destination_photo = DestinationPhoto::findOrFail($id);
+        $destination_photo->delete();
+        if($destination_photo->photo && file_exists(public_path('uploads/'.$destination_photo->photo))) {
+            unlink(public_path('uploads/'.$destination_photo->photo));
+        }
+        return redirect()->route('destination_photos',$destination_photo->destination_id)->with('success','Photo Deleted Successfully');
+    }
+
+    public function destination_videos($id){
+
+        $destination_videos=DestinationVideo::where('destination_id',$id)->get();
+        $destination = Destination::where('id',$id)->first();
+        return view('admin.destination.videos',compact('destination','destination_videos'));
+    }
+
+
+    public function destination_video_submit(Request $request, $id)
+    {
+        $request->validate([
+            'video' => 'required',
+        ]);
+
+        $obj = new DestinationVideo();
+        $obj->destination_id = $id;
+        $obj->video = $request->video;
+        $obj->save();
+        return redirect()->route('destination_videos',$id)->with('success','Video Uploaded Successfully');
+    }
+
+    public function destination_video_delete($id)
+    {
+        $destination_video = DestinationVideo::findOrFail($id);
+        $destination_video->delete();
+        if($destination_video->video && file_exists(public_path('uploads/'.$destination_video->video))) {
+            unlink(public_path('uploads/'.$destination_video->video));
+        }
+        return redirect()->route('destination_videos',$destination_video->destination_id)->with('success','Video Deleted Successfully');
+    }
+
 }
