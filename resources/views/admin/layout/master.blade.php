@@ -10,6 +10,8 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
+
+    
     <link rel="stylesheet" href="{{ asset('dist/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dist/css/font_awesome_5_free.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dist/css/select2.min.css') }}">
@@ -24,6 +26,7 @@
     <link rel="stylesheet" href="{{ asset('dist/css/air-datepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dist/css/spacing.css') }}">
     <link rel="stylesheet" href="{{ asset('dist/css/custom.css') }}">
+    @stack('styles')
 
     <script src="{{ asset('dist/js/jquery-3.7.0.min.js') }}"></script>
     <script src="{{ asset('dist/js/bootstrap.bundle.min.js') }}"></script>
@@ -62,8 +65,13 @@
      data-validation-errors="{{ json_encode($errors->all() ?? []) }}"
      style="display:none;"></div>
 
+
+
+
+ 
 <script src="{{ asset('dist/js/scripts.js') }}"></script>
 <script src="{{ asset('dist/js/custom.js') }}"></script>
+@stack('scripts')
 <script>
     // iziToast is already imported above:
     // CSS: dist/css/iziToast.min.css

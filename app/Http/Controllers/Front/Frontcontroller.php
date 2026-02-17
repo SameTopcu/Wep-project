@@ -21,6 +21,7 @@ use App\Models\BlogCategories;
 use App\Models\Destination;
 use App\Models\DestinationPhoto;
 use App\Models\DestinationVideo;
+use App\Models\Packages;
 class Frontcontroller extends Controller
 {
     public function home(){
@@ -246,4 +247,9 @@ class Frontcontroller extends Controller
         return view('front.destination',compact('destination','destination_photos','destination_videos'));
     }
 
+    public function package($slug)
+    {
+        $package = Packages::where('slug',$slug)->first();
+        return view('front.package',compact('package'));
+    }
 }

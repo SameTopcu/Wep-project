@@ -15,6 +15,9 @@ use App\Http\Controllers\Admin\AdminFaqController;
 use App\Http\Controllers\Admin\AdminBlogController;
 use App\Http\Controllers\Admin\AdminPostController;
 use App\Http\Controllers\Admin\AdminDestinationController;
+use App\Http\Controllers\Admin\AdminPackagesController;
+use App\Http\Controllers\Admin\AdminAmenityController;
+
 
 Route::get('/',[FrontController::class,'home'])->name('home');
 Route::get('/about',[FrontController::class,'about'])->name('about');
@@ -29,6 +32,7 @@ Route::get('/post/{slug}',[FrontController::class,'post'])->name('post');
 Route::get('/category/{slug}',[FrontController::class,'category'])->name('category');
 Route::get('/destinations',[FrontController::class,'destinations'])->name('destinations');
 Route::get('/destination/{slug}',[FrontController::class,'destination'])->name('destination');
+Route::get('/packages/{slug}',[FrontController::class,'package'])->name('package');
 
 
 
@@ -167,6 +171,27 @@ Route::prefix('admin')->group(callback: function () {
     Route::get('/destination-videos/{id}',[AdminDestinationController::class,'destination_videos'])->name('destination_videos');
     Route::post('/destination-video-submit/{id}',[AdminDestinationController::class,'destination_video_submit'])->name('destination_video_submit');
     Route::get('/destination-video-delete/{id}',[AdminDestinationController::class,'destination_video_delete'])->name('destination_video_delete');
+
+    //packages routes : 
+    Route::get('/package/index',[AdminPackagesController::class,'index'])->name('admin_package_index');
+    Route::get('/package/create',[AdminPackagesController::class,'create'])->name('admin_package_create');
+    Route::post('/package/create',[AdminPackagesController::class,'create_submit'])->name('admin_package_create_submit');
+    Route::get('/package/edit/{id}',[AdminPackagesController::class,'edit'])->name('admin_package_edit');
+    Route::post('/package/edit/{id}',[AdminPackagesController::class,'edit_submit'])->name('admin_package_edit_submit');
+    Route::get('/package/delete/{id}',[AdminPackagesController::class,'delete'])->name('admin_package_delete');
+
+    //package amenities routes : 
+    Route::get('/package/amenities/{id}',[AdminPackagesController::class,'package_amenities'])->name('admin_package_amenities');
+    Route::post('/package/amenities-submit/{id}',[AdminPackagesController::class,'amenities_submit'])->name('admin_package_amenities_submit');
+    Route::get('/package/amenities-delete/{id}',[AdminPackagesController::class,'amenities_delete'])->name('admin_package_amenities_delete');
+
+    //amenities routes : 
+    Route::get('/amenity/index',[AdminAmenityController::class,'index'])->name('admin_amenity_index');
+    Route::get('/amenity/create',[AdminAmenityController::class,'create'])->name('admin_amenity_create');
+    Route::post('/amenity/create',[AdminAmenityController::class,'create_submit'])->name('admin_amenity_create_submit');
+    Route::get('/amenity/edit/{id}',[AdminAmenityController::class,'edit'])->name('admin_amenity_edit');
+    Route::post('/amenity/edit/{id}',[AdminAmenityController::class,'edit_submit'])->name('admin_amenity_edit_submit');
+    Route::get('/amenity/delete/{id}',[AdminAmenityController::class,'delete'])->name('admin_amenity_delete');
 
 });
 

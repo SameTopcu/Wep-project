@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('area')->nullable();
             $table->string(column: 'time_zone')->nullable();
             $table->string(column: 'visa_requirement')->nullable();
-            $table->string(column: 'best_time')->nullable();
+            $table->text(column: 'best_time')->nullable();
             $table->string('health_safety')->nullable();
             $table->text('map')->nullable();  
             $table->string('featured_photo')->nullable();

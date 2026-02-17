@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('slug')->nullable();
             $table->text('description')->nullable();
-            $table->string('map')->nullable();
+            $table->text('map')->nullable();
             $table->string('price')->nullable();
+            $table->string('banner')->nullable();
             $table->string('old_price')->nullable();
             $table->timestamps();
         });
