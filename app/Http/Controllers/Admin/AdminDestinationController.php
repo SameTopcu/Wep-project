@@ -175,9 +175,16 @@ class AdminDestinationController extends Controller
             'video' => 'required',
         ]);
 
+        $raw = trim($request->video);
+        if (preg_match('/(?:youtube\.com\/(?:watch\?.*v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $raw, $m)) {
+            $videoId = $m[1];
+        } else {
+            $videoId = strtok($raw, '?');
+        }
+
         $obj = new DestinationVideo();
         $obj->destination_id = $id;
-        $obj->video = $request->video;
+        $obj->video = $videoId;
         $obj->save();
         return redirect()->route('destination_videos',$id)->with('success','Video Uploaded Successfully');
     }

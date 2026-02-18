@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Amenity;
-
+use App\Models\PackageAmenity;
 class AdminAmenityController extends Controller
 {
     public function index(){
@@ -51,6 +51,13 @@ class AdminAmenityController extends Controller
     }
 
     public function delete($id){
+
+        $total=PackageAmenity::where('amenity_id',$id)->count();
+        if($total>0){
+            return redirect()->route('admin_amenity_index')->with('error','Amenity is associated with packages. So, it cannot be deleted.');
+        }
+
+
         $obj = Amenity::where('id',$id)->first();
         $obj->delete();
         return redirect()->route('admin_amenity_index')->with('success','Amenity is Deleted Successfully');

@@ -193,5 +193,27 @@ Route::prefix('admin')->group(callback: function () {
     Route::post('/amenity/edit/{id}',[AdminAmenityController::class,'edit_submit'])->name('admin_amenity_edit_submit');
     Route::get('/amenity/delete/{id}',[AdminAmenityController::class,'delete'])->name('admin_amenity_delete');
 
+    //package itineraries routes : 
+    Route::get('/package/itineraries/{id}',[AdminPackagesController::class,'package_itineraries'])->name('admin_package_itineraries');
+    Route::post('/package/itineraries-submit/{id}',[AdminPackagesController::class,'itineraries_submit'])->name('admin_package_itineraries_submit');
+    Route::get('/package/itineraries-delete/{id}',[AdminPackagesController::class,'itineraries_delete'])->name('admin_package_itineraries_delete');
+
+    //package photos routes : 
+    Route::get('/package/photos/{id}',[AdminPackagesController::class,'package_photos'])->name('admin_package_photos');
+    Route::post('/package/photos-submit/{id}',[AdminPackagesController::class,'photos_submit'])->name('admin_package_photos_submit');
+    Route::get('/package/photos-delete/{id}',[AdminPackagesController::class,'photos_delete'])->name('admin_package_photos_delete');
+
+
+    //package videos routes : 
+    Route::get('/package/videos/{id}',[AdminPackagesController::class,'package_videos'])->name('admin_package_videos');
+    Route::post('/package/videos-submit/{id}',[AdminPackagesController::class,'videos_submit'])->name('admin_package_videos_submit');
+    Route::get('/package/videos-delete/{id}',[AdminPackagesController::class,'videos_delete'])->name('admin_package_videos_delete');
+
+    //package faqs routes : 
+    Route::get('/package/faqs/{id}',[AdminPackagesController::class,'package_faqs'])->name('admin_package_faqs');
+    Route::post('/package/faqs-submit/{id}',[AdminPackagesController::class,'faqs_submit'])->name('admin_package_faqs_submit');
+    Route::get('/package/faqs-delete/{id}',[AdminPackagesController::class,'faqs_delete'])->name('admin_package_faqs_delete');
+
+    
 });
 

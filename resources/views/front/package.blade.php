@@ -44,18 +44,23 @@
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link active" id="tab-1" data-bs-toggle="tab" data-bs-target="#tab-1-pane" type="button" role="tab" aria-controls="tab-1-pane" aria-selected="true">Detail</button>
                                 </li>
+
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="tab-2" data-bs-toggle="tab" data-bs-target="#tab-2-pane" type="button" role="tab" aria-controls="tab-2-pane" aria-selected="false">Tour Plan</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="tab-3" data-bs-toggle="tab" data-bs-target="#tab-3-pane" type="button" role="tab" aria-controls="tab-3-pane" aria-selected="false">Location</button>
                                 </li>
+                                @if($package_videos->count() > 0 || $package_photos->count() > 0)
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="tab-4" data-bs-toggle="tab" data-bs-target="#tab-4-pane" type="button" role="tab" aria-controls="tab-4-pane" aria-selected="false">Gallery</button>
-                                </li>
+                                        <button class="nav-link" id="tab-4" data-bs-toggle="tab" data-bs-target="#tab-4-pane" type="button" role="tab" aria-controls="tab-4-pane" aria-selected="false">Gallery</button>
+                                    </li>
+                                @endif
+                                @if($package_faqs->count() > 0)
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="tab-5" data-bs-toggle="tab" data-bs-target="#tab-5-pane" type="button" role="tab" aria-controls="tab-5-pane" aria-selected="false">FAQ</button>
                                 </li>
+                                @endif
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="tab-6" data-bs-toggle="tab" data-bs-target="#tab-6-pane" type="button" role="tab" aria-controls="tab-6-pane" aria-selected="false">Review</button>
                                 </li>
@@ -79,44 +84,26 @@
                                     <h2 class="mt_30">Includes</h2>
                                     <div class="amenity">
                                         <div class="row">
+                                            @foreach($package_amenities_include as $package_amenity)
                                             <div class="col-lg-3 mb_15">
-                                                <i class="fas fa-check"></i> Swimming Pool
+                                                <i class="fas fa-check"></i> {{ $package_amenity->amenity->name }}
                                             </div>
-                                            <div class="col-lg-3 mb_15">
-                                                <i class="fas fa-check"></i> Mountain Bike
-                                            </div>
-                                            <div class="col-lg-3 mb_15">
-                                                <i class="fas fa-check"></i> Sightseeing
-                                            </div>
-                                            <div class="col-lg-3 mb_15">
-                                                <i class="fas fa-check"></i> Free Wifi
-                                            </div>
-                                            <div class="col-lg-3 mb_15">
-                                                <i class="fas fa-check"></i> Personal Guide
-                                            </div>
-                                            <div class="col-lg-3 mb_15">
-                                                <i class="fas fa-check"></i> Entrance Fees
-                                            </div>
-                                            <div class="col-lg-3 mb_15">
-                                                <i class="fas fa-check"></i> Air fares
-                                            </div>
-                                            <div class="col-lg-3 mb_15">
-                                                <i class="fas fa-check"></i> Accommodation
-                                            </div>
+                                            @endforeach
                                         </div>
                                     </div>
 
+                                    @if($package_amenities_exclude->count() > 0)
                                     <h2 class="mt_30">Excludes</h2>
                                     <div class="amenity">
                                         <div class="row">
+                                            @foreach($package_amenities_exclude as $package_amenity)
                                             <div class="col-lg-3 mb_15">
-                                                <i class="fas fa-times"></i> Departure Taxes
+                                                <i class="fas fa-times"></i> {{ $package_amenity->amenity->name }}
                                             </div>
-                                            <div class="col-lg-3 mb_15">
-                                                <i class="fas fa-times"></i> Festival & Events
-                                            </div>
+                                            @endforeach
                                         </div>
                                     </div>
+                                    @endif
                                     <!-- // Detail -->
 
                                     
@@ -129,31 +116,12 @@
                                         
                                         <div class="table-responsive">
                                             <table class="table table-bordered">
-                                                <tr>
-                                                    <td><b>Day 1</b></td>
-                                                    <td>
-                                                        <b>Morning:</b><br>
-                                                        1. Arrive at Cairns or Port Douglas and check into your hotel.<br>
-                                                        2. Welcome meeting with the tour guide and fellow travelers.<br>
-
-                                                        <b>Afternoon</b><br>
-                                                        1. Lunch at a local restaurant.<br>
-                                                        2. Visit the Cairns Aquarium to get an introduction to the marine life of the Great Barrier Reef.<br>
-
-                                                        <b>Evening</b><br>
-                                                        1. Free time to explore the local area.<br>
-                                                        2. Welcome dinner at the hotel, with an overview of the tour itinerary and reef conservation briefing.<br>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td><b>Day 2</b></td>
-                                                    <td>
-                                                        <b>Morning: </b><br>
-                                                        1. Early breakfast at the hotel.<br>
-                                                        2. Depart for the Great Barrier Reef on a comfortable catamaran.<br>
-                                                        3. Safety briefing and equipment fitting for snorkeling and diving.<br>
-                                                    </td>
-                                                </tr>
+                                                    @foreach($package_itineraries as $package_itinerary)
+                                                    <tr>
+                                                        <td><b>{{ $package_itinerary->name }}</b></td>
+                                                        <td>{!! $package_itinerary->description !!}</td>
+                                                    </tr>
+                                                    @endforeach
                                             </table>
                                         </div>
                                     </div>
@@ -177,75 +145,41 @@
                                     </h2>
                                     <div class="photo-all">
                                         <div class="row">
+                                            @if($package_photos->count() > 0)
+                                            @foreach($package_photos as $package_photo)
                                             <div class="col-md-6 col-lg-3">
                                                 <div class="item">
-                                                    <a href="uploads/package-thumb-1.jpg" class="magnific">
-                                                        <img src="uploads/package-thumb-1.jpg" alt="">
+                                                    <a href="{{ asset('uploads/'.$package_photo->photo) }}" class="magnific">
+                                                        <img src="{{ asset('uploads/'.$package_photo->photo) }}" alt="">
                                                     </a>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6 col-lg-3">
-                                                <div class="item">
-                                                    <a href="uploads/package-thumb-2.jpg" class="magnific">
-                                                        <img src="uploads/package-thumb-2.jpg" alt="">
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 col-lg-3">
-                                                <div class="item">
-                                                    <a href="uploads/package-thumb-3.jpg" class="magnific">
-                                                        <img src="uploads/package-thumb-3.jpg" alt="">
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 col-lg-3">
-                                                <div class="item">
-                                                    <a href="uploads/package-thumb-4.jpg" class="magnific">
-                                                        <img src="uploads/package-thumb-4.jpg" alt="">
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 col-lg-3">
-                                                <div class="item">
-                                                    <a href="uploads/package-thumb-5.jpg" class="magnific">
-                                                        <img src="uploads/package-thumb-5.jpg" alt="">
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 col-lg-3">
-                                                <div class="item">
-                                                    <a href="uploads/package-thumb-6.jpg" class="magnific">
-                                                        <img src="uploads/package-thumb-6.jpg" alt="">
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 col-lg-3">
-                                                <div class="item">
-                                                    <a href="uploads/package-thumb-7.jpg" class="magnific">
-                                                        <img src="uploads/package-thumb-7.jpg" alt="">
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 col-lg-3">
-                                                <div class="item">
-                                                    <a href="uploads/package-thumb-8.jpg" class="magnific">
-                                                        <img src="uploads/package-thumb-8.jpg" alt="">
-                                                    </a>
-                                                </div>
-                                            </div>
+                                            @endforeach
+                                            @endif
                                         </div>
                                     </div>
 
-
+                                    @if($package_videos->count() > 0)
                                     <h2 class="mt_30">
                                         Videos
                                     </h2>
                                     <div class="video-all">
                                         <div class="row">
+                                            @foreach($package_videos as $package_video)
+                                            @php
+                                                $rawVideo = trim($package_video->video);
+                                                if (preg_match('/(?:youtube\.com\/(?:watch\?.*v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $rawVideo, $m)) {
+                                                    $videoId = $m[1];
+                                                } else {
+                                                    $videoId = preg_replace('/[^a-zA-Z0-9_-]/', '', $rawVideo);
+                                                }
+                                            @endphp
                                             <div class="col-md-6 col-lg-6">
                                                 <div class="item">
-                                                    <a class="video-button" href="http://www.youtube.com/watch?v=kLuqCtnKr_8">
-                                                        <img src="http://img.youtube.com/vi/kLuqCtnKr_8/0.jpg" alt="">
+                                                    <a class="video-button" href="https://www.youtube.com/watch?v={{ $videoId }}">
+                                                        <img src="https://img.youtube.com/vi/{{ $videoId }}/hqdefault.jpg"
+                                                             onerror="this.onerror=null;this.src='https://img.youtube.com/vi/{{ $videoId }}/mqdefault.jpg';"
+                                                             alt="">
                                                         <div class="icon">
                                                             <i class="far fa-play-circle"></i>
                                                         </div>
@@ -253,92 +187,40 @@
                                                     </a>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6 col-lg-6">
-                                                <div class="item">
-                                                    <a class="video-button" href="http://www.youtube.com/watch?v=HRg1gJi6yqc">
-                                                        <img src="http://img.youtube.com/vi/HRg1gJi6yqc/0.jpg" alt="">
-                                                        <div class="icon">
-                                                            <i class="far fa-play-circle"></i>
-                                                        </div>
-                                                        <div class="bg"></div>
-                                                    </a>
-                                                </div>
-                                            </div>
+                                            @endforeach
+                                            
                                         </div>
                                     </div>
+                                    @endif
                                     <!-- // Gallery -->
                                 </div>
 
-
+                                @if($package_faqs->count() > 0)
                                 <div class="tab-pane fade" id="tab-5-pane" role="tabpanel" aria-labelledby="tab-5" tabindex="0">
                                     <!-- FAQ -->
                                     <h2 class="mt_30">Frequently Asked Questions</h2>
                                     <div class="faq-package">
                                         <div class="accordion" id="accordionExample">
+                                            @foreach($package_faqs as $package_faq)
                                             <div class="accordion-item mb_30">
-                                                <h2 class="accordion-header" id="heading_1">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_1" aria-expanded="false" aria-controls="collapse_1">
-                                                        What activities are included in the tour?
+                                                <h2 class="accordion-header" id="heading_{{$loop->iteration}}" >
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{$loop->iteration}}" aria-expanded="false" aria-controls="collapse_{{$loop->iteration}}">
+                                                        {{ $package_faq->question }}
                                                     </button>
                                                 </h2>
-                                                <div id="collapse_1" class="accordion-collapse collapse" aria-labelledby="heading_1" data-bs-parent="#accordionExample">
+                                                <div id="collapse_{{$loop->iteration}}" class="accordion-collapse collapse" aria-labelledby="heading_{{$loop->iteration}}" data-bs-parent="#accordionExample">
                                                     <div class="accordion-body">
-                                                        The Great Barrier Reef tour includes snorkeling, diving, and glass-bottom boat tours, allowing you to explore the vibrant marine life and coral formations. Additionally, the package offers guided reef tours, informative presentations by marine biologists, and leisure time on stunning beaches.
+                                                        {{ $package_faq->answer }}
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="accordion-item mb_30">
-                                                <h2 class="accordion-header" id="heading_2">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_2" aria-expanded="false" aria-controls="collapse_2">
-                                                        What should I bring on the tour?
-                                                    </button>
-                                                </h2>
-                                                <div id="collapse_2" class="accordion-collapse collapse" aria-labelledby="heading_2" data-bs-parent="#accordionExample">
-                                                    <div class="accordion-body">
-                                                        We recommend bringing swimwear, sunscreen, a hat, sunglasses, and a reusable water bottle. If you plan to snorkel or dive, bring your own gear if you prefer, although equipment is provided. Don’t forget a camera to capture the incredible underwater scenery!
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="accordion-item mb_30">
-                                                <h2 class="accordion-header" id="heading_3">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_3" aria-expanded="false" aria-controls="collapse_3">
-                                                        Is the tour suitable for beginners?
-                                                    </button>
-                                                </h2>
-                                                <div id="collapse_3" class="accordion-collapse collapse" aria-labelledby="heading_3" data-bs-parent="#accordionExample">
-                                                    <div class="accordion-body">
-                                                        Yes, the tour is designed for all experience levels. Our guides provide comprehensive instructions and safety briefings for snorkeling and diving. Beginners can enjoy glass-bottom boat tours and shallow water snorkeling, while experienced divers can explore deeper parts of the reef.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="accordion-item mb_30">
-                                                <h2 class="accordion-header" id="heading_4">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_4" aria-expanded="false" aria-controls="collapse_4">
-                                                        How long is the tour and what’s the schedule?
-                                                    </button>
-                                                </h2>
-                                                <div id="collapse_4" class="accordion-collapse collapse" aria-labelledby="heading_4" data-bs-parent="#accordionExample">
-                                                    <div class="accordion-body">
-                                                        The Great Barrier Reef tour typically lasts a full day, starting early in the morning and returning by late afternoon. The schedule includes transportation to and from the reef, several hours of water activities, lunch, and free time for relaxation and exploration.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="accordion-item mb_30">
-                                                <h2 class="accordion-header" id="heading_5">
-                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_5" aria-expanded="false" aria-controls="collapse_5">
-                                                        What measures are in place for reef conservation?
-                                                    </button>
-                                                </h2>
-                                                <div id="collapse_5" class="accordion-collapse collapse" aria-labelledby="heading_5" data-bs-parent="#accordionExample">
-                                                    <div class="accordion-body">
-                                                        Our tours adhere to strict environmental guidelines to protect the reef. We use eco-friendly boats, limit visitor numbers, and provide education on reef conservation. Our guides also ensure that all activities are conducted responsibly, minimizing impact on the marine ecosystem.
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            @endforeach
+                                            
                                         </div>
                                     </div>
                                     <!-- // FAQ -->
                                 </div>
+                                @endif
 
 
                                 <div class="tab-pane fade" id="tab-6-pane" role="tabpanel" aria-labelledby="tab-6" tabindex="0">

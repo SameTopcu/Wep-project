@@ -68,7 +68,7 @@
 
 
 
- 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
 <script src="{{ asset('dist/js/scripts.js') }}"></script>
 <script src="{{ asset('dist/js/custom.js') }}"></script>
 @stack('scripts')
@@ -122,6 +122,32 @@
             console.warn('iziToast not loaded. Check dist/js/iziToast.min.js');
         }
     }
+</script>
+
+<script>
+        document.addEventListener('click', function (e) {
+    // Tıklanan eleman veya onun içindeki ikon .delete-confirm sınıfına sahipse
+    if (e.target.closest('.delete-confirm')) {
+        e.preventDefault(); // Sayfanın hemen gitmesini engelle
+        
+        const url = e.target.closest('.delete-confirm').getAttribute('href');
+
+        Swal.fire({
+            title: 'Emin misiniz?',
+            text: "Bu işlem geri alınamaz!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Evet, sil!',
+            cancelButtonText: 'İptal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url; // Kullanıcı onaylarsa linke git
+            }
+        });
+    }
+});
 </script>
 </body>
 </html>

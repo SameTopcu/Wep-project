@@ -28,7 +28,7 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td><img src="{{ asset('uploads/'.$destination_photo->photo) }}" alt="" class="w_100"></td>
                                         <td>
-                                            <a href="{{ route('destination_photo_delete',$destination_photo->id) }}" class="btn btn-danger btn-sm" onClick="return confirm('Are you sure?');">
+                                            <a href="{{ route('destination_photo_delete',$destination_photo->id) }}" class="btn btn-danger btn-sm delete-confirm">
                                                 <i class="fas fa-trash"></i>
                                             </a>
                                         </td>

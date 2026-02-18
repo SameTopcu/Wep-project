@@ -6,7 +6,7 @@
         <div class="main-content">
             <section class="section">
                 <div class="section-header justify-content-between">
-                    <h1>Amenities of {{$package->name}}</h1>
+                    <h1>Video Gallery of {{$package->name}}</h1>
                     <div class="ml-auto">
                         <a href="{{ route('admin_package_index') }}" class="btn btn-primary"><i class="fas fa-list"></i> View All</a>
                     </div>
@@ -15,29 +15,22 @@
                     <div class="row">
                         <div class="col-md-7">
                             <div class="table-responsive">
+                                <h4>Video Gallery List</h4>
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
                                             <th>SL</th>
-                                            <th>Amenity</th>
-                                            <th>Type</th>
+                                            <th>Video</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
-                                    @if($package_amenities->count() > 0)
-                                    @foreach($package_amenities as $package_amenity)
+                                    @if($package_videos->count() > 0)
+                                    @foreach($package_videos as $package_video)
                                     <tbody>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $package_amenity->amenity->name ?? 'N/A' }}</td>
+                                        <td><iframe width="350" height="200" src="https://www.youtube.com/embed/{{ $package_video->video }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></td>
                                         <td>
-                                            @if($package_amenity->type == 'include')
-                                                <span class="badge badge-success">Include</span>
-                                            @else
-                                                <span class="badge badge-danger">Exclude</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('admin_package_amenities_delete',$package_amenity->id) }}" class="btn btn-danger btn-sm delete-confirm">
+                                            <a href="{{ route('admin_package_videos_delete',$package_video->id) }}" class="btn btn-danger btn-sm delete-confirm">
                                                 <i class="fas fa-trash"></i>
                                             </a>
                                         </td>
@@ -45,7 +38,7 @@
                                     @endforeach
                                     @else
                                     <tbody>
-                                        <tr><td colspan="4" class="text-center">No amenities found</td></tr>
+                                        <tr><td colspan="4" class="text-center">No videos found</td></tr>
                                     </tbody>
                                     @endif
                                 </table>
@@ -53,6 +46,7 @@
                         </div>
 
                         <div class="col-md-5">
+                            <h4>Add Video</h4>
                             <div class="card">
                                 <div class="card-body">
                                     @if(session()->has('success'))
@@ -67,26 +61,13 @@
                                      @endforeach
                                     @endif
                                     
-                                    <form action="{{ route('admin_package_amenities_submit', $package->id) }}" method="post">
+                                    <form action="{{ route('admin_package_videos_submit', $package->id) }}" method="post" enctype="multipart/form-data">
                                        @csrf
                                  
                                        <div class="mb-3">
-                                           <label class="form-label">Amenity *</label>
-                                           <select name="amenity_id" class="form-control">
-                                           @foreach($amenities as $amenity)
-                                                <option value="{{ $amenity->id }}">{{ $amenity->name }}</option>
-                                            @endforeach
-                                            </select>
+                                           <label class="form-label">Video *</label>
+                                           <div><input type="text" name="video" class="form-control" value="{{ old('video') }}" placeholder="Enter Youtube Video ID"></div>
                                         </div>  
-                                        <div class="mb-3">
-                                            <label class="form-label">Type *</label>
-                                           <div><select name="type" class="form-control">
-                                            
-                                            <option value="include">Include</option>
-                                            <option value="exclude">Exclude</option>
-                                           </select></div>
-                                       </div>
-
                                        <div class="mb-3">
                                            <label class="form-label" ></label>
                                            <button type="submit" class="btn btn-primary">

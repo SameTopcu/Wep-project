@@ -51,16 +51,18 @@
                                                     <td>{{ $package->name }}</td>
                                                     <td>
                                                         <a href="{{ route('admin_package_amenities',$package->id) }}" class="btn btn-primary">Amenities</a>
-                                                        <a href="" class="btn btn-success">Itinerary</a>
-                                                        <a href="" class="btn btn-info">Photo Galery</a>
-                                                        <a href="" class="btn btn-warning">Video Gallery</a>
+                                                        <a href="{{ route('admin_package_itineraries',$package->id) }}" class="btn btn-success">Itinerary</a>
+                                                        <a href="{{ route('admin_package_photos',$package->id) }}" class="btn btn-info">Photo Galery</a>
+                                                        <a href="{{ route('admin_package_videos',$package->id) }}" class="btn btn-warning">Video Gallery</a>
+                                                        <a href="{{ route('admin_package_faqs',$package->id) }}" class="btn btn-danger">FAQ</a>
+
                                                     </td>
                                                     <td class="pt_10 pb_10">
                                                         <div class="d-flex gap-2">
                                                             <a href="{{ route('admin_package_edit',$package->id) }}" class="btn btn-primary btn-sm">
                                                                 <i class="fas fa-edit"></i>
                                                             </a>
-                                                            <a href="{{ route('admin_package_delete',$package->id) }}" class="btn btn-danger btn-sm" onClick="return confirm('Are you sure?');">
+                                                            <a href="{{ route('admin_package_delete',$package->id) }}" class="btn btn-danger btn-sm delete-confirm">
                                                                 <i class="fas fa-trash"></i>
                                                             </a>
                                                         </div>

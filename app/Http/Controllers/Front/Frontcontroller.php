@@ -22,6 +22,12 @@ use App\Models\Destination;
 use App\Models\DestinationPhoto;
 use App\Models\DestinationVideo;
 use App\Models\Packages;
+use App\Models\PackageAmenity;
+use App\Models\Amenity;
+use App\Models\PackageItinerary;
+use App\Models\PackagePhoto;
+use App\Models\PackageVideo;
+use App\Models\PackageFaq;
 class Frontcontroller extends Controller
 {
     public function home(){
@@ -250,6 +256,12 @@ class Frontcontroller extends Controller
     public function package($slug)
     {
         $package = Packages::where('slug',$slug)->first();
-        return view('front.package',compact('package'));
+        $package_itineraries=PackageItinerary::where('package_id',$package->id)->get();
+        $package_photos=PackagePhoto::where('package_id',$package->id)->get();
+        $package_videos=PackageVideo::where('package_id',$package->id)->get();
+        $package_faqs=PackageFaq::where('package_id',$package->id)->get();
+        $package_amenities_include=PackageAmenity::with('amenity')->where('package_id',$package->id)->where('type','include')->get();
+        $package_amenities_exclude=PackageAmenity::with('amenity')->where('package_id',$package->id)->where('type','exclude')->get();
+        return view('front.package',compact('package','package_amenities_include','package_amenities_exclude','package_itineraries','package_photos','package_videos','package_faqs'));
     }
 }

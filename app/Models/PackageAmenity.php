@@ -8,7 +8,7 @@ class PackageAmenity extends Model
 {
     protected $table = 'package_emaneties';
 
-    public function rAmenity()
+    public function amenity()
     {
         return $this->belongsTo(Amenity::class, 'amenity_id');
     }

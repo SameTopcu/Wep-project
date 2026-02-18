@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 use App\Models\Packages;
 use App\Models\Destination;
 use App\Models\PackageAmenity;
+use App\Models\PackageItinerary;
+use App\Models\PackagePhoto;
+use App\Models\PackageVideo;
+use App\Models\PackageFaq;
 class AdminPackagesController extends Controller
 {
     public function index(){
@@ -114,16 +118,33 @@ class AdminPackagesController extends Controller
     public function delete($id)
     {
     
-    //$total_photos=DestinationPhoto::where('destination_id',$id)->count();
-    //
-    //if($total_photos>0){
-    //    return redirect()->route('admin_destination_index')->with('error','Destination has photos. So, it cannot be deleted.');
-    //}
+    
+    $total_itineraries=PackageItinerary::where('package_id',$id)->count();
+    if($total_itineraries>0){
+        return redirect()->route('admin_package_index')->with('error','Package has itineraries. So, it cannot be deleted.');
+    }
 
-    //$total_videos=DestinationVideo::where('destination_id',$id)->count();
-    //if($total_videos>0){
-    //    return redirect()->route('admin_destination_index')->with('error','Destination has videos. So, it cannot be deleted.');
-    //}
+    $total_videos=PackageVideo::where('package_id',$id)->count();
+    if($total_videos>0){
+        return redirect()->route('admin_package_index')->with('error','Package has videos. So, it cannot be deleted.');
+    }
+    
+    $total_photos=PackagePhoto::where('package_id',$id)->count();
+    
+    if($total_photos>0){
+        return redirect()->route('admin_package_index')->with('error','Package has photos. So, it cannot be deleted.');
+    }
+
+    $total_amenities=PackageAmenity::where('package_id',$id)->count();
+    if($total_amenities>0){
+        return redirect()->route('admin_package_index')->with('error','Package has amenities. So, it cannot be deleted.');
+    }
+
+    $total_faqs=PackageFaq::where('package_id',$id)->count();
+    if($total_faqs>0){
+        return redirect()->route('admin_package_index')->with('error','Package has faqs. So, it cannot be deleted.');
+    }
+    
     $package = Packages::findOrFail($id);
 
     if($package->featured_photo && file_exists(public_path('uploads/'.$package->featured_photo))) {
@@ -172,4 +193,148 @@ class AdminPackagesController extends Controller
 
         return redirect()->route('admin_package_amenities', $package_id)->with('success', 'Amenity Deleted Successfully');
     }
+
+    public function package_itineraries($id){
+        
+        $package_itineraries=PackageItinerary::where('package_id',$id)->get();
+        $package = Packages::where('id',$id)->first(); 
+        return view('admin.package.itineraries',compact('package','package_itineraries'));
+    }
+
+    public function itineraries_submit(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+        ]);
+
+        $obj = new PackageItinerary();
+        $obj->package_id = $id;
+        $obj->name = $request->name;
+        $obj->description = $request->description;
+        $obj->save();
+
+        return redirect()->route('admin_package_itineraries', $id)->with('success', 'Itinerary Added Successfully');
+    }
+
+    public function itineraries_delete($id)
+    {
+        $package_itinerary = PackageItinerary::findOrFail($id);
+        $package_id = $package_itinerary->package_id;
+        $package_itinerary->delete();
+
+        return redirect()->route('admin_package_itineraries', $package_id)->with('success', 'Itinerary is Deleted Successfully');
+    }
+
+
+    public function package_photos($id){
+        
+        $package_photos=PackagePhoto::where('package_id',$id)->get();
+        $package = Packages::where('id',$id)->first(); 
+        return view('admin.package.photos',compact('package','package_photos'));
+    }
+
+    public function photos_submit(Request $request, $id)
+    {
+        $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $final_name = 'package_photo_' . time() . '.' . $request->photo->extension();
+        $request->photo->move(public_path('uploads'), $final_name);
+
+        $obj = new PackagePhoto();
+        $obj->package_id = $id;
+        $obj->photo = $final_name;
+        $obj->save();
+
+        return redirect()->route('admin_package_photos', $id)->with('success', 'Photo Added Successfully');
+    }
+
+    public function photos_delete($id)
+    {
+        $package_photo = PackagePhoto::findOrFail($id);
+        $package_id = $package_photo->package_id;
+        $package_photo->delete();
+
+        if($package_photo->photo && file_exists(public_path('uploads/'.$package_photo->photo))) {
+            unlink(public_path('uploads/'.$package_photo->photo));
+        }
+
+        return redirect()->route('admin_package_photos', $package_id)->with('success', 'Photo is Deleted Successfully');
+    }
+
+
+    public function package_videos($id){
+        
+        $package_videos=PackageVideo::where('package_id',$id)->get();
+        $package = Packages::where('id',$id)->first(); 
+        return view('admin.package.videos',compact('package','package_videos'));
+    }
+
+    public function videos_submit(Request $request, $id)
+    {
+        $request->validate([
+            'video' => 'required',
+        ]);
+
+        
+
+        $raw = trim($request->video);
+        if (preg_match('/(?:youtube\.com\/(?:watch\?.*v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $raw, $m)) {
+            $videoId = $m[1];
+        } else {
+            $videoId = strtok($raw, '?');
+        }
+
+        $obj = new PackageVideo();
+        $obj->package_id = $id;
+        $obj->video = $videoId;
+        $obj->save();
+        return redirect()->route('admin_package_videos', $id)->with('success', 'Video Added Successfully');
+    }
+
+    public function videos_delete($id)
+    {
+        $package_video = PackageVideo::findOrFail($id);
+        $package_id = $package_video->package_id;
+        $package_video->delete();
+
+        if($package_video->video && file_exists(public_path('uploads/'.$package_video->video))) {
+            unlink(public_path('uploads/'.$package_video->video));
+        }
+
+        return redirect()->route('admin_package_videos', $package_id)->with('success', 'Video is Deleted Successfully');
+    }
+
+    public function package_faqs($id){
+        $package_faqs=PackageFaq::where('package_id',$id)->get();
+        $package = Packages::where('id',$id)->first(); 
+        return view('admin.package.faqs',compact('package','package_faqs'));
+    }
+
+    public function faqs_submit(Request $request, $id)
+    {
+        $request->validate([
+            'question' => 'required',
+            'answer' => 'required',
+        ]);
+
+        $obj = new PackageFaq();
+        $obj->package_id = $id;
+        $obj->question = $request->question;
+        $obj->answer = $request->answer;
+        $obj->save();
+        return redirect()->route('admin_package_faqs', $id)->with('success', 'FAQ Added Successfully');
+    }
+
+    public function faqs_delete($id)
+    {
+        $package_faq = PackageFaq::findOrFail($id);
+        $package_id = $package_faq->package_id;
+        $package_faq->delete();
+        return redirect()->route('admin_package_faqs', $package_id)->with('success', 'FAQ is Deleted Successfully');
+    }
+
+
 }

@@ -36,7 +36,7 @@
                                     
                                           </td>
                                         <td>
-                                            <a href="{{ route('destination_video_delete',$destination_video->id) }}" class="btn btn-danger btn-sm" onClick="return confirm('Are you sure?');">
+                                            <a href="{{ route('destination_video_delete',$destination_video->id) }}" class="btn btn-danger btn-sm delete-confirm">
                                                 <i class="fas fa-trash"></i>
                                             </a>
                                         </td>

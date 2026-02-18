@@ -54,7 +54,7 @@
                                                     <td class="pt_10 pb_10">
                                                         <div class="d-flex gap-2">
                                                             <a href="{{ route('admin_faq_edit',$faq->id) }}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
-                                                            <a href="{{ route('admin_faq_delete',$faq->id) }}" class="btn btn-danger btn-sm" onClick="return confirm('Are you sure?');"><i class="fas fa-trash"></i></a>
+                                                            <a href="{{ route('admin_faq_delete',$faq->id) }}" class="btn btn-danger btn-sm delete-confirm"><i class="fas fa-trash"></i></a>
                                                         </div>
                                                     </td>                                                    
                                                 </tr>

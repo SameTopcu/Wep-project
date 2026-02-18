@@ -58,7 +58,7 @@
                                                             <a href="{{ route('admin_destination_edit',$destination->id) }}" class="btn btn-primary btn-sm">
                                                                 <i class="fas fa-edit"></i>
                                                             </a>
-                                                            <a href="{{ route('admin_destination_delete',$destination->id) }}" class="btn btn-danger btn-sm" onClick="return confirm('Are you sure?');">
+                                                            <a href="{{ route('admin_destination_delete',$destination->id) }}" class="btn btn-danger btn-sm delete-confirm">
                                                                 <i class="fas fa-trash"></i>
                                                             </a>
                                                         </div>
