@@ -12,6 +12,7 @@ use App\Models\PackageItinerary;
 use App\Models\PackagePhoto;
 use App\Models\PackageVideo;
 use App\Models\PackageFaq;
+use App\Models\Tour;
 class AdminPackagesController extends Controller
 {
     public function index(){
@@ -143,6 +144,11 @@ class AdminPackagesController extends Controller
     $total_faqs=PackageFaq::where('package_id',$id)->count();
     if($total_faqs>0){
         return redirect()->route('admin_package_index')->with('error','Package has faqs. So, it cannot be deleted.');
+    }
+
+    $total_tours=Tour::where('package_id',$id)->count();
+    if($total_tours>0){
+        return redirect()->route('admin_package_index')->with('error','Package has tours. So, it cannot be deleted.');
     }
     
     $package = Packages::findOrFail($id);

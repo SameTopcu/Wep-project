@@ -50,6 +50,8 @@
 
                     <li class="{{ Request::is('admin/amenity/*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin_amenity_index') }}"><i class="fas fa-hand-point-right"></i> <span>Amenity</span></a></li>
 
+                    <li class="{{ Request::is('admin/tour/*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin_tour_index') }}"><i class="fas fa-hand-point-right"></i> <span>Tour</span></a></li>
+
                     <li class="{{ Request::is('admin/profile') ? 'active' : ''}}"><a class="nav-link" href="{{ route('admin_profile') }}"><i class="fas fa-hand-point-right"></i> <span>Profile</span></a></li>
 
 

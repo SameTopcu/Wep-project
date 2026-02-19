@@ -31,4 +31,11 @@ class Packages extends Model
     {
         return $this->hasMany(related: PackageFaq::class);
     }
+
+    public function tours(){
+        return $this->hasMany(related: Tour::class);
+    }
+    public function bookings(){
+        return $this->hasMany(related: Booking::class);
+    }
 }

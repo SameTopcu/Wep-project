@@ -17,7 +17,7 @@ use App\Http\Controllers\Admin\AdminPostController;
 use App\Http\Controllers\Admin\AdminDestinationController;
 use App\Http\Controllers\Admin\AdminPackagesController;
 use App\Http\Controllers\Admin\AdminAmenityController;
-
+use App\Http\Controllers\Admin\AdminTourController;
 
 Route::get('/',[FrontController::class,'home'])->name('home');
 Route::get('/about',[FrontController::class,'about'])->name('about');
@@ -33,6 +33,7 @@ Route::get('/category/{slug}',[FrontController::class,'category'])->name('catego
 Route::get('/destinations',[FrontController::class,'destinations'])->name('destinations');
 Route::get('/destination/{slug}',[FrontController::class,'destination'])->name('destination');
 Route::get('/packages/{slug}',[FrontController::class,'package'])->name('package');
+Route::post('/payment',[FrontController::class,'payment'])->name('payment');
 
 
 
@@ -214,6 +215,12 @@ Route::prefix('admin')->group(callback: function () {
     Route::post('/package/faqs-submit/{id}',[AdminPackagesController::class,'faqs_submit'])->name('admin_package_faqs_submit');
     Route::get('/package/faqs-delete/{id}',[AdminPackagesController::class,'faqs_delete'])->name('admin_package_faqs_delete');
 
-    
+    //tours routes :
+    Route::get('/tour/index',[AdminTourController::class,'index'])->name('admin_tour_index');
+    Route::get('/tour/create',[AdminTourController::class,'create'])->name('admin_tour_create');
+    Route::post('/tour/create',[AdminTourController::class,'create_submit'])->name('admin_tour_create_submit');
+    Route::get('/tour/edit/{id}',[AdminTourController::class,'edit'])->name('admin_tour_edit');
+    Route::post('/tour/edit/{id}',[AdminTourController::class,'edit_submit'])->name('admin_tour_edit_submit');
+    Route::get('/tour/delete/{id}',[AdminTourController::class,'delete'])->name('admin_tour_delete');
 });
 

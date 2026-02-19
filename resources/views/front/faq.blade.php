@@ -28,12 +28,12 @@
 
                             @foreach($faqs as $faq)
                             <div class="accordion-item mb_30">
-                                <h2 class="accordion-header" id="heading_1">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_1" aria-expanded="false" aria-controls="collapse_1">
+                                <h2 class="accordion-header" id="heading_{{ $faq->id }}">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{ $faq->id }}" aria-expanded="false" aria-controls="collapse_{{ $faq->id }}">
                                         {{ $faq->question }}
                                     </button>
                                 </h2>
-                                <div id="collapse_1" class="accordion-collapse collapse" aria-labelledby="heading_1" data-bs-parent="#accordionExample">
+                                <div id="collapse_{{ $faq->id }}" class="accordion-collapse collapse" aria-labelledby="heading_{{ $faq->id }}" data-bs-parent="#accordionExample">
                                     <div class="accordion-body">
                                         {{ $faq->answer }}
                                     </div>
