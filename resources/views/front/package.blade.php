@@ -338,7 +338,20 @@
                                     <input type="hidden" name="package_id" value="{{ $package->id }}">
                                     <div class="row">
                                         <div class="col-md-8">
+                                         @php $i=0 @endphp
                                          @foreach($tours as $tour)
+                                         @if($tour->booking_end_date < date('Y-m-d'))
+                                                @continue
+                                         @endif
+                                         @php 
+                                         $i++;
+                                         $total_booked_seats=0;
+                                         $all_data= App\Models\Booking::where('tour_id',$tour->id)->where('package_id',$package->id)->get();
+                                         foreach($all_data as $data){
+                                         $total_booked_seats+=$data->total_person;
+
+                                         }
+                                         @endphp
                                          <h2 class="mt_30">
                                                 <input type="radio" value="{{ $tour->id }}" name="tour_id" {{ $loop->first ? 'checked' : '' }}>
                                                 Tour {{ $loop->iteration }}
@@ -365,6 +378,10 @@
                                                             @else
                                                             <td><span class="text-danger">Unlimited</span></td>
                                                             @endif
+                                                        </tr>
+                                                        <tr>
+                                                            <td><b>Total Booked Seats:</td>
+                                                            <td>{{ $total_booked_seats }}
                                                         </tr>   
                                                         
                                                                                                                                                                     
@@ -396,9 +413,9 @@
                                                           <tr>
                                                               <td>
                                                                   <label for=""><b>Select Payment Method</b></label>
-                                                                  <select name="" class="form-select">
-                                                                      <option value="">PayPal</option>
-                                                                      <option value="">Stripe</option>
+                                                                  <select name="payment_method" class="form-select">
+                                                                      <option value="PayPal">PayPal</option>
+                                                                      <option value="Stripe">Stripe</option>
                                                                   </select>
                                                               </td>
                                                           </tr>

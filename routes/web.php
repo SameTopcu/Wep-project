@@ -33,8 +33,17 @@ Route::get('/category/{slug}',[FrontController::class,'category'])->name('catego
 Route::get('/destinations',[FrontController::class,'destinations'])->name('destinations');
 Route::get('/destination/{slug}',[FrontController::class,'destination'])->name('destination');
 Route::get('/packages/{slug}',[FrontController::class,'package'])->name('package');
+
+
 Route::post('/payment',[FrontController::class,'payment'])->name('payment');
 
+// Payment Routes - PayPal
+Route::get('/paypal/success', [FrontController::class, 'paypal_success'])->name('paypal_success');
+Route::get('/paypal/cancel', [FrontController::class, 'paypal_cancel'])->name('paypal_cancel');
+
+// Payment Routes - Stripe
+Route::get('/stripe/success', [FrontController::class, 'stripe_success'])->name('stripe_success');
+Route::get('/stripe/cancel', [FrontController::class, 'stripe_cancel'])->name('stripe_cancel');
 
 
 Route::get('/forget-password',[FrontController::class,'forget_password'])->name('forget_password');

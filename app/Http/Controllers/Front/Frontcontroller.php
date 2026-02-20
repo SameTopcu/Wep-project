@@ -29,6 +29,10 @@ use App\Models\PackagePhoto;
 use App\Models\PackageVideo;
 use App\Models\PackageFaq;
 use App\Models\Tour;
+use App\Models\Booking;
+use Srmklive\PayPal\Services\PayPal as PayPalClient;
+
+
 class Frontcontroller extends Controller
 {
     public function home(){
@@ -269,7 +273,148 @@ class Frontcontroller extends Controller
 
     public function payment(Request $request)
     {
-        
-        dd($request->all());
+
+        if(! $request->tour_id){
+
+            return redirect()->back()->with('error','Please select a tour first!');
+
+        }
+        $request->validate([
+            'payment_method' => 'required',
+            'total_person' => 'required|integer|min:1',
+        ]);
+
+        $user_id = Auth::guard('web')->user()->id;
+        $package = Packages::where('id', $request->package_id)->first();
+        $total_price = $request->ticket_price * $request->total_person;
+
+        session()->put('total_person', $request->total_person);
+        session()->put('tour_id', $request->tour_id);
+        session()->put('user_id', $user_id);
+        session()->put('package_id', $package->id);
+        session()->put('paid_amount', $total_price);
+
+        if ($request->payment_method == 'PayPal') {
+            $provider = new PayPalClient;
+            $provider->setApiCredentials(config('paypal'));
+            $provider->getAccessToken();
+            $response = $provider->createOrder([
+                "intent" => "CAPTURE",
+                "application_context" => [
+                    "return_url" => route('paypal_success'),
+                    "cancel_url" => route('paypal_cancel'),
+                ],
+                "purchase_units" => [
+                    [
+                        "amount" => [
+                            "currency_code" => "USD",
+                            "value" => $total_price,
+                        ]
+                    ]
+                ]
+            ]);
+
+            if (isset($response['id']) && $response['id'] != null) {
+                foreach ($response['links'] as $link) {
+                    if ($link['rel'] == 'approve') {
+                        return redirect()->away($link['href']);
+                    }
+                }
+            }
+
+            return redirect()->route('paypal_cancel');
+        }
+        elseif ($request->payment_method == 'Stripe') {
+            $stripe = new \Stripe\StripeClient(config('stripe.stripe_sk'));
+            $response = $stripe->checkout->sessions->create([
+                'line_items' => [
+                    [
+                        'price_data' => [
+                            'currency' => 'usd',
+                            'product_data' => [
+                                'name' => $package->name,
+                            ],
+                            'unit_amount' => $total_price * 100,
+                        ],
+                        'quantity' => 1,
+                    ],
+                ],
+                'mode' => 'payment',
+                'success_url' => route('stripe_success') . '?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url' => route('stripe_cancel'),
+            ]);
+
+            if (isset($response->id) && $response->id != '') {
+                return redirect($response->url);
+            }
+
+            return redirect()->route('stripe_cancel');
+        }
+
+        return redirect()->back()->with('error', 'Invalid payment method.');
+    }
+
+    public function paypal_success(Request $request)
+    {
+        $provider = new PayPalClient;
+        $provider->setApiCredentials(config('paypal'));
+        $provider->getAccessToken();
+        $response = $provider->capturePaymentOrder($request->token);
+
+        if (isset($response['status']) && $response['status'] == 'COMPLETED') {
+            $obj = new Booking();
+            $obj->tour_id = session()->get('tour_id');
+            $obj->package_id = session()->get('package_id');
+            $obj->user_id = session()->get('user_id');
+            $obj->total_person = session()->get('total_person');
+            $obj->paid_amount = $response['purchase_units'][0]['payments']['captures'][0]['amount']['value'];
+            $obj->invoice_no = time();
+            $obj->payment_status = 'COMPLETED';
+            $obj->payment_method = 'PayPal';
+            $obj->save();
+
+            session()->forget(['total_person', 'tour_id', 'user_id', 'package_id', 'paid_amount']);
+
+            return redirect()->route('home')->with('success', 'Payment is successful.');
+        }
+
+        return redirect()->route('paypal_cancel');
+    }
+
+    public function paypal_cancel()
+    {
+        session()->forget(['total_person', 'tour_id', 'user_id', 'package_id', 'paid_amount']);
+        return redirect()->route('home')->with('error', 'Payment is cancelled.');
+    }
+
+    public function stripe_success(Request $request)
+    {
+        $stripe = new \Stripe\StripeClient(config('stripe.stripe_sk'));
+        $session = $stripe->checkout->sessions->retrieve($request->session_id);
+
+        if ($session->payment_status == 'paid') {
+            $obj = new Booking();
+            $obj->tour_id = session()->get('tour_id');
+            $obj->package_id = session()->get('package_id');
+            $obj->user_id = session()->get('user_id');
+            $obj->total_person = session()->get('total_person');
+            $obj->paid_amount = session()->get('paid_amount');
+            $obj->invoice_no = time();
+            $obj->payment_status = 'COMPLETED';
+            $obj->payment_method = 'Stripe';
+            $obj->save();
+
+            session()->forget(['total_person', 'tour_id', 'user_id', 'package_id', 'paid_amount']);
+
+            return redirect()->route('home')->with('success', 'Payment is successful.');
+        }
+
+        return redirect()->route('stripe_cancel');
+    }
+
+    public function stripe_cancel()
+    {
+        session()->forget(['total_person', 'tour_id', 'user_id', 'package_id', 'paid_amount']);
+        return redirect()->route('home')->with('error', 'Payment is cancelled.');
     }
 }
