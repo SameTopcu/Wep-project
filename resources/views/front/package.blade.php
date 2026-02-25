@@ -338,18 +338,25 @@
                                     <input type="hidden" name="package_id" value="{{ $package->id }}">
                                     <div class="row">
                                         <div class="col-md-8">
-                                         @php $i=0 @endphp
+                                         @php
+                                            $i=0;
+                                            $active_tours = $tours->filter(fn($t) => $t->booking_end_date >= date('Y-m-d'));
+                                         @endphp
+                                         @if($active_tours->isEmpty())
+                                            <div class="alert alert-warning">No active tours available for booking at this time.</div>
+                                         @endif
                                          @foreach($tours as $tour)
                                          @if($tour->booking_end_date < date('Y-m-d'))
                                                 @continue
                                          @endif
                                          @php 
                                          $i++;
-                                         $total_booked_seats=0;
-                                         $all_data= App\Models\Booking::where('tour_id',$tour->id)->where('package_id',$package->id)->get();
-                                         foreach($all_data as $data){
-                                         $total_booked_seats+=$data->total_person;
+                                         $total_booked_seats = App\Models\Booking::where('tour_id',$tour->id)->where('package_id',$package->id)->sum('total_person');
 
+                                         if($tour->tour_total_seat <= 0){
+                                            $remaining_seats = 'Unlimited';
+                                         } else {
+                                            $remaining_seats = $tour->tour_total_seat - $total_booked_seats;
                                          }
                                          @endphp
                                          <h2 class="mt_30">
@@ -382,7 +389,11 @@
                                                         <tr>
                                                             <td><b>Total Booked Seats:</td>
                                                             <td>{{ $total_booked_seats }}
-                                                        </tr>   
+                                                        </tr> 
+                                                        <tr>
+                                                            <td><b>Remaining Seats:</b></td>
+                                                            <td>{{ $remaining_seats }}</td>
+                                                        </tr>
                                                         
                                                                                                                                                                     
                                                     </table>
@@ -392,6 +403,7 @@
                                         </div>
                                         
 
+                                        @if($active_tours->isNotEmpty())
                                         <div class="col-md-4">
                                             <h2 class="mt_30">Payment</h2>
                                             <div class="summary">                                                
@@ -440,6 +452,7 @@
                                                 }
                                             </script>
                                         </div>
+                                        @endif
                                     </div>
                                     <!-- // Booking -->
                                     </form>

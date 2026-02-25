@@ -37,6 +37,7 @@
                                                     <th>Tour Start Date</th>
                                                     <th>End Date</th>
                                                     <th>Booking End Date</th>
+                                                    <th>Booking</th>
                                                     <th>Tour Total Seat</th>
                                                     <th>Action</th>
                                                 </tr>
@@ -60,6 +61,9 @@
                                                     <td>
                                                         {{ $tour->booking_end_date }} 
                                                     </td> 
+                                                    <td>
+                                                        <a href="{{ route('admin_tour_booking',[$tour->id,$tour->package->id]) }}" class="btn btn-primary btn-sm">Booking Information</a>
+                                                    </td>
                                                     <td>
                                                         @if($tour->tour_total_seat > 0)
                                                         {{ $tour->tour_total_seat }} 

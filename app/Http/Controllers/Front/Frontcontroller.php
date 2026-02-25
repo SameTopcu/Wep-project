@@ -273,12 +273,34 @@ class Frontcontroller extends Controller
 
     public function payment(Request $request)
     {
-
-        if(! $request->tour_id){
+        //check the tour selection
+        if(!$request->tour_id){
 
             return redirect()->back()->with('error','Please select a tour first!');
 
         }
+
+
+
+        //check the seat availability
+
+        $tour_data = Tour::where('id', $request->tour_id)->first();
+        $tour_allowed_seats = $tour_data->tour_total_seat;
+
+        if ($tour_allowed_seats > 0) {
+            $total_booked_seats = Booking::where('tour_id', $request->tour_id)
+                ->where('package_id', $request->package_id)
+                ->sum('total_person');
+
+            $remaining_seats = $tour_allowed_seats - $total_booked_seats;
+
+            if ($request->total_person > $remaining_seats) {
+                return redirect()->back()->with('error', 'Bu tur için sadece ' . $remaining_seats . ' koltuk kaldı. Lütfen kişi sayısını buna göre ayarlayın.');
+            }
+        }
+
+        
+        
         $request->validate([
             'payment_method' => 'required',
             'total_person' => 'required|integer|min:1',

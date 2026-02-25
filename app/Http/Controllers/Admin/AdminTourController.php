@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Tour;
 use App\Models\Packages;
+use App\Models\Booking;
 
 class AdminTourController extends Controller
 {
@@ -69,8 +70,33 @@ class AdminTourController extends Controller
     }
 
     public function delete($id){
+
+        $total =Booking::where('tour_id',$id)->count();
+        if($total>0){
+            return redirect()->back()->with('error','This tour has bookings.So it can not be deleted.');
+        }
+
+
         $obj =Tour::where('id',$id)->first();
         $obj->delete();
         return redirect()->route('admin_tour_index')->with('success','Tour is Deleted Successfully');
+    }
+
+    public function tour_booking($tour_id,$package_id){
+        $all_data = Booking::with('user')->where('tour_id',$tour_id)->where('package_id',$package_id)->get();
+        return view('admin.tour.booking',compact('all_data','tour_id','package_id'));
+    }
+
+    public function booking_delete($id){
+        $booking = Booking::findOrFail($id);
+        $tour_id = $booking->tour_id;
+        $package_id = $booking->package_id;
+        $booking->delete();
+        return redirect()->route('admin_tour_booking',['tour_id'=>$tour_id,'package_id'=>$package_id])->with('success','Booking Deleted Successfully');
+    }
+
+    public function tour_invoice($invoice_no){
+        $booking = Booking::with(['user','tour','package'])->where('invoice_no',$invoice_no)->first();
+        return view('admin.tour.invoice',compact('booking'));
     }
 }
