@@ -62,11 +62,11 @@ Route::get('/logout', [FrontController::class,'logout'])->name('logout');
 // User
 Route::middleware('auth')->prefix('user')->group(function () { 
     Route::get('/dashboard',[UserController::class,'dashboard'])->name('user_dashboard');
+    Route::get('/booking',[UserController::class,'booking'])->name('user_booking');
+    Route::get('/invoice/{invoice_no}',[UserController::class,'invoice'])->name('user_invoice');
     Route::get('/logout', [UserController::class, 'logout'])->name('user_logout');
-    
     // 1. Profil Sayfasını Görme (GET)
     Route::get('/profile', [UserController::class,'profile'])->name('user_profile');
-    
     // 2. Profili Kaydetme (POST) - Adres veya Method farklı olmalı
     Route::post('/profile', [UserController::class,'profile_submit'])->name('user_profile_submit'); 
 });

@@ -6,11 +6,24 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Booking;
+use App\Models\Admin;   
 
 class UserController extends Controller
 {
     public function dashboard(){
         return view('user.dashboard');
+    }
+
+    public function booking(){
+        $all_data = Booking::with(['user', 'tour', 'package'])->where('user_id', Auth::guard('web')->user()->id)->get();
+        return view('user.booking',compact('all_data'));
+    }
+
+    public function invoice($invoice_no){
+        $admin_data=Admin::where('id',1)->first();
+        $booking = Booking::with(['user', 'tour', 'package'])->where('invoice_no', $invoice_no)->first();
+        return view('user.invoice',compact('booking','invoice_no','admin_data'));
     }
     
 
