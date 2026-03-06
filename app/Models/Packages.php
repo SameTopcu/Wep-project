@@ -14,28 +14,34 @@ class Packages extends Model
 
     public function package_photos()
     {
-        return $this->hasMany(related: PackagePhoto::class);
+        return $this->hasMany(PackagePhoto::class, 'package_id');
     }
 
     public function package_itineraries()
     {
-        return $this->hasMany(related: PackageItinerary::class);
+        return $this->hasMany(PackageItinerary::class, 'package_id');
     }
 
     public function package_videos()
     {
-        return $this->hasMany(related: PackageVideo::class);
+        return $this->hasMany(PackageVideo::class, 'package_id');
     }
 
     public function package_faqs()
     {
-        return $this->hasMany(related: PackageFaq::class);
+        return $this->hasMany(PackageFaq::class, 'package_id');
     }
 
     public function tours(){
-        return $this->hasMany(related: Tour::class);
+        return $this->hasMany(Tour::class, 'package_id');
     }
     public function bookings(){
-        return $this->hasMany(related: Booking::class);
+        return $this->hasMany(Booking::class, 'package_id');
+    }
+    public function reviews(){
+        return $this->hasMany(Review::class, 'package_id');
+    }
+    public function package_amenities(){
+        return $this->hasMany(PackageAmenity::class, 'package_id');
     }
 }

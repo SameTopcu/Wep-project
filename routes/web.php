@@ -18,7 +18,9 @@ use App\Http\Controllers\Admin\AdminDestinationController;
 use App\Http\Controllers\Admin\AdminPackagesController;
 use App\Http\Controllers\Admin\AdminAmenityController;
 use App\Http\Controllers\Admin\AdminTourController;
+use App\Http\Controllers\Admin\AdminReviewController;
 
+// Front Routes
 Route::get('/',[FrontController::class,'home'])->name('home');
 Route::get('/about',[FrontController::class,'about'])->name('about');
 Route::get('/team-members',[FrontController::class,'team_members'])->name('team_members');
@@ -32,7 +34,10 @@ Route::get('/post/{slug}',[FrontController::class,'post'])->name('post');
 Route::get('/category/{slug}',[FrontController::class,'category'])->name('category');
 Route::get('/destinations',[FrontController::class,'destinations'])->name('destinations');
 Route::get('/destination/{slug}',[FrontController::class,'destination'])->name('destination');
+Route::get('/packages',[FrontController::class,'packages'])->name('packages');
 Route::get('/packages/{slug}',[FrontController::class,'package'])->name('package');
+
+Route::post('/review/submit',[FrontController::class,'review_submit'])->name('review_submit');
 
 
 Route::post('/payment',[FrontController::class,'payment'])->name('payment');
@@ -64,6 +69,7 @@ Route::middleware('auth')->prefix('user')->group(function () {
     Route::get('/dashboard',[UserController::class,'dashboard'])->name('user_dashboard');
     Route::get('/booking',[UserController::class,'booking'])->name('user_booking');
     Route::get('/invoice/{invoice_no}',[UserController::class,'invoice'])->name('user_invoice');
+    Route::get('/review',[UserController::class,'review'])->name('user_review');
     Route::get('/logout', [UserController::class, 'logout'])->name('user_logout');
     // 1. Profil Sayfasını Görme (GET)
     Route::get('/profile', [UserController::class,'profile'])->name('user_profile');
@@ -234,5 +240,10 @@ Route::prefix('admin')->group(callback: function () {
     Route::get('/tour/booking/{tour_id}/{package_id}',[AdminTourController::class,'tour_booking'])->name('admin_tour_booking');
     Route::get('/tour/booking-delete/{id}',[AdminTourController::class,'booking_delete'])->name('admin_booking_delete');  
     Route::get('/tour/invoice/{invoice_no}',[AdminTourController::class,'tour_invoice'])->name('admin_tour_invoice'); 
+    Route::get('/tour/booking-approve/{id}',[AdminTourController::class,'booking_approve'])->name('admin_tour_booking_approve');
+
+    //review routes : 
+    Route::get('/review/index',[AdminReviewController::class,'index'])->name('admin_review_index');
+    Route::get('/review/delete/{id}',[AdminReviewController::class,'delete'])->name('admin_review_delete');
 });
 

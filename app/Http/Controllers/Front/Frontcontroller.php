@@ -30,6 +30,7 @@ use App\Models\PackageVideo;
 use App\Models\PackageFaq;
 use App\Models\Tour;
 use App\Models\Booking;
+use App\Models\Review;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 
@@ -223,6 +224,26 @@ class Frontcontroller extends Controller
         $faqs = Faq::get();
         return view('front.faq',compact('faqs'));
     }
+    
+    public function review_submit(Request $request){
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string|max:255',
+        ]);
+        $obj=new Review();
+        $obj->user_id=Auth::guard('web')->user()->id;
+        $obj->package_id=$request->package_id;
+        $obj->rating=$request->rating;
+        $obj->comment=$request->comment;
+        $obj->save();
+
+        $package=Packages::where('id',$request->package_id)->first();
+        $package->total_rating = $package->total_rating + 1;
+        $package->total_score = $package->total_score + $request->rating;
+        $package->update();
+        return redirect()->back()->with('success','Review is submitted succesfully');
+    }
+    
 
     public function blog(){
         $posts = Post::with('blog_category')->paginate(4);
@@ -258,6 +279,37 @@ class Frontcontroller extends Controller
         return view('front.destination',compact('destination','destination_photos','destination_videos'));
     }
 
+    public function packages(Request $request){
+        $destinations = Destination::orderBy('name','asc')->get();
+
+        $query = Packages::with('destination', 'package_amenities', 'package_itineraries', 'tours', 'reviews');
+
+        if($request->name){
+            $query->where('name','like','%'.$request->name.'%');
+        }
+
+        if($request->price_min){
+            $query->whereRaw('CAST(price AS UNSIGNED) >= ?', [(int)$request->price_min]);
+        }
+
+        if($request->price_max){
+            $query->whereRaw('CAST(price AS UNSIGNED) <= ?', [(int)$request->price_max]);
+        }
+
+        if($request->destination_id){
+            $query->where('destination_id',$request->destination_id);
+        }
+
+        if($request->review && $request->review != 'all'){
+            $min = (int)$request->review;
+            $query->whereRaw('CAST(total_rating AS UNSIGNED) > 0 AND (CAST(total_score AS UNSIGNED) / CAST(total_rating AS UNSIGNED)) >= ? AND (CAST(total_score AS UNSIGNED) / CAST(total_rating AS UNSIGNED)) < ?', [$min, $min + 1]);
+        }
+
+        $packages = $query->paginate(6);
+
+        return view('front.packages',compact('destinations','packages'));
+    }
+
     public function package($slug)
     {
         $package = Packages::where('slug',$slug)->first();
@@ -268,7 +320,9 @@ class Frontcontroller extends Controller
         $tours=Tour::where('package_id',$package->id)->get();
         $package_amenities_include=PackageAmenity::with('amenity')->where('package_id',$package->id)->where('type','include')->get();
         $package_amenities_exclude=PackageAmenity::with('amenity')->where('package_id',$package->id)->where('type','exclude')->get();
-        return view('front.package',compact('package','package_amenities_include','package_amenities_exclude','package_itineraries','package_photos','package_videos','package_faqs','tours'));
+
+        $reviews=Review::with('user')->where('package_id',$package->id)->get();
+        return view('front.package',compact('package','package_amenities_include','package_amenities_exclude','package_itineraries','package_photos','package_videos','package_faqs','tours','reviews'));
     }
 
     public function payment(Request $request)
@@ -371,6 +425,19 @@ class Frontcontroller extends Controller
             }
 
             return redirect()->route('stripe_cancel');
+        }
+        elseif ($request->payment_method == 'Cash') {
+            $obj = new Booking();
+            $obj->tour_id = $request->tour_id;
+            $obj->package_id = $request->package_id;
+            $obj->user_id = Auth::guard('web')->user()->id;
+            $obj->total_person = $request->total_person;
+            $obj->paid_amount = $request->ticket_price;
+            $obj->invoice_no = time();
+            $obj->payment_status = 'PENDING';
+            $obj->payment_method = 'Cash';
+            $obj->save();
+            return redirect()->route('home')->with('success', 'Payment is pending. Please wait for the admin to confirm the payment.');
         }
 
         return redirect()->back()->with('error', 'Invalid payment method.');

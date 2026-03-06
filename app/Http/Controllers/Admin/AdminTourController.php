@@ -99,4 +99,9 @@ class AdminTourController extends Controller
         $booking = Booking::with(['user','tour','package'])->where('invoice_no',$invoice_no)->first();
         return view('admin.tour.invoice',compact('booking'));
     }
-}
+
+    public function booking_approve($id){
+        Booking::where('id',$id)->update(['payment_status'=>'COMPLETED']);
+        return redirect()->back()->with('success','Booking Approved Successfully');
+    }
+}   

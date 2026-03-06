@@ -4,15 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PackageAmenity extends Model
+class Review extends Model
 {
-    protected $table = 'package_emaneties';
-
-    public function amenity()
+    public function user()
     {
-        return $this->belongsTo(Amenity::class, 'amenity_id');
+        return $this->belongsTo(User::class);
     }
-
     public function package()
     {
         return $this->belongsTo(Packages::class);

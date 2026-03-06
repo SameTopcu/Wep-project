@@ -109,6 +109,8 @@ class AdminPackagesController extends Controller
     $package->map = $request->map;
     $package->price = $request->price;
     $package->old_price = $request->old_price;
+    $package->total_rating =0;
+    $package->total_score =0;
 
     $package->save();
 

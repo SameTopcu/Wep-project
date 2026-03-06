@@ -59,8 +59,9 @@
                                                     <td>
                                                         @if($data->payment_status == 'COMPLETED')
                                                             <span class="badge badge-success">{{ $data->payment_status }}</span>
-                                                        @else
-                                                            <span class="badge badge-warning">{{ $data->payment_status }}</span>
+                                                        @elseif($data->payment_status == 'PENDING')
+                                                            <span class="badge badge-danger">{{ $data->payment_status }}</span> 
+                                                            <a href="{{ route('admin_tour_booking_approve',$data->id) }}" > <i class="fas fa-check"></i> Confirm Payment</a>                                                       
                                                         @endif
                                                     </td>
                                                     <td>{{ $data->invoice_no }}</td>

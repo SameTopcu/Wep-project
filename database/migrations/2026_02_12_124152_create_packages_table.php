@@ -20,6 +20,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->text('map')->nullable();
             $table->string('price')->nullable();
+            $table->string('total_rating')->nullable();
+            $table->string('total_score')->nullable();
             $table->string('banner')->nullable();
             $table->string('old_price')->nullable();
             $table->timestamps();

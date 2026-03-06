@@ -8,11 +8,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Booking;
 use App\Models\Admin;   
-
+use App\Models\Review;
 class UserController extends Controller
 {
     public function dashboard(){
-        return view('user.dashboard');
+        $total_completed_orders = Booking::where('user_id', Auth::guard('web')->user()->id)->where('payment_status', 'COMPLETED')->count();
+        $total_pending_orders = Booking::where('user_id', Auth::guard('web')->user()->id)->where('payment_status', 'PENDING')->count();
+
+
+
+        return view('user.dashboard',compact('total_completed_orders','total_pending_orders'));
     }
 
     public function booking(){
@@ -24,6 +29,11 @@ class UserController extends Controller
         $admin_data=Admin::where('id',1)->first();
         $booking = Booking::with(['user', 'tour', 'package'])->where('invoice_no', $invoice_no)->first();
         return view('user.invoice',compact('booking','invoice_no','admin_data'));
+    }
+
+    public function review(){
+        $reviews = Review::with(['user', 'package.destination'])->where('user_id', Auth::guard('web')->user()->id)->get();
+        return view('user.review',compact('reviews'));
     }
     
 
