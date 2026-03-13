@@ -19,7 +19,7 @@ use App\Http\Controllers\Admin\AdminPackagesController;
 use App\Http\Controllers\Admin\AdminAmenityController;
 use App\Http\Controllers\Admin\AdminTourController;
 use App\Http\Controllers\Admin\AdminReviewController;
-
+use App\Http\Controllers\Admin\AdminUserController;
 // Front Routes
 Route::get('/',[FrontController::class,'home'])->name('home');
 Route::get('/about',[FrontController::class,'about'])->name('about');
@@ -36,8 +36,10 @@ Route::get('/destinations',[FrontController::class,'destinations'])->name('desti
 Route::get('/destination/{slug}',[FrontController::class,'destination'])->name('destination');
 Route::get('/packages',[FrontController::class,'packages'])->name('packages');
 Route::get('/packages/{slug}',[FrontController::class,'package'])->name('package');
-
+Route::get('/wishlist/{package_id}',[FrontController::class,'wishlist'])->name('wishlist');
 Route::post('/review/submit',[FrontController::class,'review_submit'])->name('review_submit');
+Route::post('/subscriber/submit',[FrontController::class,'subscriber_submit'])->name('subscriber_submit');
+Route::get('/subscriber/verify/{email}/{token}',[FrontController::class,'subscriber_verify'])->name('subscriber_verify');
 
 
 Route::post('/payment',[FrontController::class,'payment'])->name('payment');
@@ -75,6 +77,11 @@ Route::middleware('auth')->prefix('user')->group(function () {
     Route::get('/profile', [UserController::class,'profile'])->name('user_profile');
     // 2. Profili Kaydetme (POST) - Adres veya Method farklı olmalı
     Route::post('/profile', [UserController::class,'profile_submit'])->name('user_profile_submit'); 
+    Route::get('/wishlist', [UserController::class,'wishlist'])->name('user_wishlist');
+    Route::get('/wishlist-delete/{id}', [UserController::class,'wishlist_delete'])->name('user_wishlist_delete');
+    Route::get('/message', [UserController::class,'message'])->name('user_message');
+    Route::get('/message-start', [UserController::class,'message_start'])->name('user_message_start');
+    Route::post('/message-submit', [UserController::class,'message_submit'])->name('user_message_submit');
 });
 
 
@@ -245,5 +252,11 @@ Route::prefix('admin')->group(callback: function () {
     //review routes : 
     Route::get('/review/index',[AdminReviewController::class,'index'])->name('admin_review_index');
     Route::get('/review/delete/{id}',[AdminReviewController::class,'delete'])->name('admin_review_delete');
+
+
+    //user routes : 
+    Route::get('/message',[AdminUserController::class,'message'])->name('admin_message');
+    Route::get('/message-detail/{id}',[AdminUserController::class,'message_detail'])->name('admin_message_detail');
+    Route::post('/message-reply/{id}',[AdminUserController::class,'message_reply'])->name('admin_message_reply');
 });
 

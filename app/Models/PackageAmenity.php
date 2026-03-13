@@ -13,8 +13,8 @@ class PackageAmenity extends Model
         return $this->belongsTo(Amenity::class, 'amenity_id');
     }
 
-    public function package()
+    public function packages()
     {
-        return $this->belongsTo(Packages::class);
+        return $this->belongsTo(Packages::class, 'package_id');
     }
 }

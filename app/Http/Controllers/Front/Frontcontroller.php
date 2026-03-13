@@ -31,6 +31,8 @@ use App\Models\PackageFaq;
 use App\Models\Tour;
 use App\Models\Booking;
 use App\Models\Review;
+use App\Models\Wishlist;
+use App\Models\Subscriber;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 
@@ -44,7 +46,8 @@ class Frontcontroller extends Controller
         $testimonials = Testimonial::get();
         $destinations = Destination::orderBy('view_count','desc')->get()->take(8);
         $posts = Post::with('blog_category')->orderBy('id','desc')->get()->take(3);
-        return view("front.home",compact('sliders','welcome_item','features','counter_item','testimonials','posts','destinations'));
+        $packages = Packages::orderBy('id','desc')->get()->take(3);
+        return view("front.home",compact('sliders','welcome_item','features','counter_item','testimonials','posts','destinations','packages'));
     }
 
     public function about(){
@@ -238,9 +241,9 @@ class Frontcontroller extends Controller
         $obj->save();
 
         $package=Packages::where('id',$request->package_id)->first();
-        $package->total_rating = $package->total_rating + 1;
-        $package->total_score = $package->total_score + $request->rating;
-        $package->update();
+        $package->total_rating = (int)$package->total_rating + 1;
+        $package->total_score = (int)$package->total_score + $request->rating;
+        $package->save();
         return redirect()->back()->with('success','Review is submitted succesfully');
     }
     
@@ -276,7 +279,8 @@ class Frontcontroller extends Controller
         $destination->update();
         $destination_photos = DestinationPhoto::where('destination_id',$destination->id)->get();
         $destination_videos = DestinationVideo::where('destination_id',$destination->id)->get()->take(2);
-        return view('front.destination',compact('destination','destination_photos','destination_videos'));
+        $packages = Packages::with('destination', 'package_amenities', 'package_itineraries', 'tours', 'reviews')->where('destination_id',$destination->id)->get();
+        return view('front.destination',compact('destination','destination_photos','destination_videos','packages'));
     }
 
     public function packages(Request $request){
@@ -308,6 +312,21 @@ class Frontcontroller extends Controller
         $packages = $query->paginate(6);
 
         return view('front.packages',compact('destinations','packages'));
+    }
+    public function wishlist($package_id){
+        if(!Auth::guard('web')->user()){
+            return redirect()->route('login')->with('error','Please login to add to wishlist');
+        }
+        $user_id=Auth::guard('web')->user()->id;
+        $check=Wishlist::where('package_id',$package_id)->where('user_id',$user_id)->count();
+        if($check > 0){
+            return redirect()->back()->with('error','Package already in wishlist');
+        }
+        $wishlist= new Wishlist();
+        $wishlist->package_id = $package_id;
+        $wishlist->user_id = $user_id;
+        $wishlist->save();
+        return redirect()->back()->with('success','Package added to wishlist successfully');
     }
 
     public function package($slug)
@@ -505,5 +524,39 @@ class Frontcontroller extends Controller
     {
         session()->forget(['total_person', 'tour_id', 'user_id', 'package_id', 'paid_amount']);
         return redirect()->route('home')->with('error', 'Payment is cancelled.');
+    }
+
+    public function subscriber_submit(Request $request){
+        $request->validate([
+            'email' => 'required|email|unique:subscribers,email',
+        ]);
+
+        $token = hash('sha256', time());
+
+        $subscriber = new Subscriber();
+        $subscriber->email = $request->email;
+        $subscriber->token = $token;
+        $subscriber->status = 'Pending';
+        $subscriber->save();
+        $verification_link = route('subscriber_verify', ['email' => $request->email, 'token' => $token]);
+        $subject = "Subscriber Verification";
+        $message = 'Please click the following link to verify your email address:<br>';
+        $message .= '<a href="'.$verification_link.'">Verify Email</a>';
+        try {
+            Mail::to($request->email)->send(new Websitemail($subject, $message));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Mail gönderilirken bir sorun oluştu.');
+        }
+        return redirect()->back()->with('success', 'Subscriber is added successfully.');
+    }
+
+    public function subscriber_verify($email,$token){
+        $subscriber = Subscriber::where('email',$email)->where('token',$token)->first();
+        if(!$subscriber) {
+            return redirect()->route('home')->with('error', 'Invalid verification link.');
+        }
+        $subscriber->status = 'Active';
+        $subscriber->save();
+        return redirect()->route('home')->with('success', 'Subscriber is verified successfully.');
     }
 }

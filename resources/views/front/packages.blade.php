@@ -126,23 +126,23 @@
                     <div class="col-lg-8 col-md-6">
                         <div class="row">
 
-                            @foreach($packages as $package)
+                            @forelse($packages as $package)
                             <div class="col-lg-6 col-md-6">
                                 <div class="item pb_25">
                                     <div class="photo">
                                         <a href="{{ route('package',$package->slug) }}"><img src="{{ asset('uploads/'.$package->featured_photo) }}" alt=""></a>
                                         <div class="wishlist">
-                                            <a href=""><i class="far fa-heart"></i></a>
+                                            <a href="{{ route('wishlist',$package->id) }}"><i class="far fa-heart"></i></a>
                                         </div>
                                     </div>
                                     <div class="text">
                                         <div class="price">
-                                            {{ $package->price }} <del>{{ $package->old_price }}</del>
+                                            ${{ $package->price }} <del>${{ $package->old_price }}</del>
                                         </div>
                                         <h2>
-                                            <a href="package.html">{{ $package->name }}</a>
+                                            <a href="{{ route('package',$package->slug) }}">{{ $package->name }}</a>
                                         </h2>
-                                                                              @if($package->total_score && $package->total_rating)
+                                        @if($package->total_score && $package->total_rating)
                                         <div class="review">
                                             @php
                                                 $rating = $package->total_score / $package->total_rating;
@@ -163,6 +163,7 @@
                                             @for($i=1; $i<=5; $i++)
                                             <i class="far fa-star"></i>
                                             @endfor
+                                            
                                         </div>
                                         @endif
                                         <div class="element">
@@ -187,7 +188,13 @@
                                     </div>
                                 </div>
                             </div>  
-                            @endforeach
+                            @empty
+                            <div class="col-12">
+                                <div class="alert alert-warning text-center">
+                                    No package was found for this filter.
+                                </div>
+                            </div>
+                            @endforelse
                         </div>
                         <div class="row">
                             <div class="col-md-12">

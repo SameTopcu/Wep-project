@@ -45,132 +45,73 @@
                             <h2>Packages</h2>
                             <div class="package">
                                 <div class="row">
-                                    <div class="col-lg-4 col-md-6">
+                                    @forelse($packages as $package)
+                                    <div class="col-lg-6 col-md-6">
                                         <div class="item pb_25">
                                             <div class="photo">
-                                                <a href="package.html"><img src="uploads/package-1.jpg" alt=""></a>
-                                                <div class="wishlist">
-                                                    <a href=""><i class="far fa-heart"></i></a>
-                                                </div>
+                                                <a href="{{ route('package',$package->slug) }}"><img src="{{ asset('uploads/'.$package->featured_photo) }}" alt=""></a>
+                                                
                                             </div>
                                             <div class="text">
                                                 <div class="price">
-                                                    $150 <del>$250</del>
+                                                    ${{ $package->price }} <del>${{ $package->old_price }}</del>
                                                 </div>
                                                 <h2>
-                                                    <a href="package.html">Venice Grand Canal</a>
+                                                    <a href="{{ route('package',$package->slug) }}">{{ $package->name }}</a>
                                                 </h2>
+                                                @if($package->total_score && $package->total_rating)
                                                 <div class="review">
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    (4 Reviews)
+                                                    @php
+                                                        $rating = $package->total_score / $package->total_rating;
+                                                    @endphp
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        @if($i <= $rating)
+                                                        <i class="fas fa-star"></i>
+                                                        @elseif($i - 0.5 <= $rating)
+                                                        <i class="fas fa-star-half-alt"></i>
+                                                        @else
+                                                        <i class="far fa-star"></i>
+                                                        @endif
+                                                    @endfor
+                                                    ({{ $package->reviews->count() }} Reviews)
+                                                </div>
+                                                @else
+                                                <div class="review">
+                                                    @for($i=1; $i<=5; $i++)
+                                                    <i class="far fa-star"></i>
+                                                    @endfor
+
+                                                </div>
+                                                @endif
+                                                <div class="element">
+                                                    <div class="element-left">
+                                                        <i class="fas fa-plane-departure"></i> {{ $package->destination->name }}
+                                                    </div>
+                                                    {{-- <div class="element-right">
+                                                        <i class="fas fa-calendar-alt date-icon"></i> {{ $package->created_at->format('d M, Y') }}
+                                                    </div>  --}}
+                                                    <div class="element-right">
+                                                        <i class="fas fa-align-justify"></i> {{ $package->package_amenities->count() }} Amenities
+                                                    </div> 
                                                 </div>
                                                 <div class="element">
                                                     <div class="element-left">
-                                                        <i class="fas fa-plane-departure"></i> Italy
+                                                        <i class="fas fa-users"></i> {{ $package->tours->count()}} tours
                                                     </div>
                                                     <div class="element-right">
-                                                        <i class="fas fa-calendar-alt date-icon"></i> 14 Jun, 2024
-                                                    </div>
-                                                </div>
-                                                <div class="element">
-                                                    <div class="element-left">
-                                                        <i class="fas fa-users"></i> 25 Persons
-                                                    </div>
-                                                    <div class="element-right">
-                                                        <i class="fas fa-clock"></i> 7 Days
+                                                        <i class="fas fa-clock"></i> {{ $package->package_itineraries->count() }} Days
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-6">
-                                        <div class="item pb_25">
-                                            <div class="photo">
-                                                <a href="package.html"><img src="uploads/package-2.jpg" alt=""></a>
-                                                <div class="wishlist">
-                                                    <a href=""><i class="far fa-heart"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="text">
-                                                <div class="price">
-                                                    $230
-                                                </div>
-                                                <h2>
-                                                    <a href="package.html">Great Barrier Reef</a>
-                                                </h2>
-                                                <div class="review">
-                                                    <i class="far fa-star"></i>
-                                                    <i class="far fa-star"></i>
-                                                    <i class="far fa-star"></i>
-                                                    <i class="far fa-star"></i>
-                                                    <i class="far fa-star"></i>
-                                                    (0 Reviews)
-                                                </div>
-                                                <div class="element">
-                                                    <div class="element-left">
-                                                        <i class="fas fa-plane-departure"></i> Australia
-                                                    </div>
-                                                    <div class="element-right">
-                                                        <i class="fas fa-calendar-alt date-icon"></i> 23 Sep, 2024
-                                                    </div>
-                                                </div>
-                                                <div class="element">
-                                                    <div class="element-left">
-                                                        <i class="fas fa-users"></i> 12 Persons
-                                                    </div>
-                                                    <div class="element-right">
-                                                        <i class="fas fa-clock"></i> 3 Days
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    </div>  
+                                    @empty
+                                    <div class="col-12">
+                                        <div class="alert alert-warning text-center">
+                                            The destination has no packages yet.
                                         </div>
                                     </div>
-                                    <div class="col-lg-4 col-md-6">
-                                        <div class="item pb_25">
-                                            <div class="photo">
-                                                <a href="package.html"><img src="uploads/package-3.jpg" alt=""></a>
-                                                <div class="wishlist">
-                                                    <a href=""><i class="far fa-heart"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="text">
-                                                <div class="price">
-                                                    $540
-                                                </div>
-                                                <h2>
-                                                    <a href="package.html">Similan Islands, Andaman Sea</a>
-                                                </h2>
-                                                <div class="review">
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="far fa-star"></i>
-                                                    (34 Reviews)
-                                                </div>
-                                                <div class="element">
-                                                    <div class="element-left">
-                                                        <i class="fas fa-plane-departure"></i> Thailand
-                                                    </div>
-                                                    <div class="element-right">
-                                                        <i class="fas fa-calendar-alt date-icon"></i> 20 Jul, 2024
-                                                    </div>
-                                                </div>
-                                                <div class="element">
-                                                    <div class="element-left">
-                                                        <i class="fas fa-users"></i> 22 Persons
-                                                    </div>
-                                                    <div class="element-right">
-                                                        <i class="fas fa-clock"></i> 5 Days
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @endforelse
                                 </div>
                             </div>
                         </div>

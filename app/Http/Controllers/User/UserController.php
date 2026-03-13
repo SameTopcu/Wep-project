@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Booking;
 use App\Models\Admin;   
 use App\Models\Review;
+use App\Models\Wishlist;
+use App\Models\Message;
+use App\Models\MessageComment;
+use App\Mail\Websitemail;
+use Illuminate\Support\Facades\Mail;
 class UserController extends Controller
 {
     public function dashboard(){
@@ -31,11 +36,66 @@ class UserController extends Controller
         return view('user.invoice',compact('booking','invoice_no','admin_data'));
     }
 
+    public function wishlist(){
+        $wishlists = Wishlist::with(['package', 'user'])->where('user_id', Auth::guard('web')->user()->id)->get();
+        return view('user.wishlist',compact('wishlists'));
+    }
+
     public function review(){
         $reviews = Review::with(['user', 'package.destination'])->where('user_id', Auth::guard('web')->user()->id)->get();
         return view('user.review',compact('reviews'));
     }
-    
+
+    public function message(){
+        $message_check = Message::where('user_id', Auth::guard('web')->user()->id)->count();
+        $message = Message::where('user_id', Auth::guard('web')->user()->id)->first();
+        $message_comments = $message ? MessageComment::where('message_id', $message->id)->orderBy('id','desc')->get() : collect();
+
+
+
+        return view('user.message',compact('message_check','message','message_comments'));
+    }
+    public function message_start(){
+
+        $message_check=Message::where('user_id', Auth::guard('web')->user()->id)->count();
+        if($message_check == 0){
+            $message = new Message();
+            $message->user_id = Auth::guard('web')->user()->id;
+            $message->save();
+            return redirect()->back();
+        }else{
+            return redirect()->back()->with('error','You have already started a message');
+        }
+    }
+
+    public function message_submit(Request $request){
+
+        $request->validate([
+            'comment'=>'required',
+        ]);
+        $message = Message::where('user_id', Auth::guard('web')->user()->id)->first();
+        
+        $object = new MessageComment();
+        $object->message_id = $message->id;
+        $object->sender_id = Auth::guard('web')->user()->id;
+        $object->comment = $request->comment;
+        $object->type = 'user';
+        $object->save();
+
+
+        $admin_data = Admin::where('id', 1)->first();
+        $user = Auth::guard('web')->user();
+        $subject = 'New Message from ' . $user->name;
+        $body = '<b>From:</b> ' . $user->name . ' (' . $user->email . ')<br><br>'
+              . '<b>Message:</b><br>' . nl2br(e($request->comment));
+        Mail::to($admin_data->email)->send(new Websitemail($subject, $body));
+        return redirect()->back()->with('success','Message is sent successfully. Please wait for the response.');
+    }
+    public function wishlist_delete($id){
+        $wishlist = Wishlist::find($id);
+        $wishlist->delete();
+        return redirect()->back()->with('success','Wishlist deleted successfully');
+    }
 
     public function logout(){
         Auth::guard('web')->logout();

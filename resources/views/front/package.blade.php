@@ -9,6 +9,7 @@
             <div class="col-md-12">
                 <h2>{{ $package->name }}</h2>
                 <h3><i class="fas fa-plane-departure"></i> {{ $package->destination->name }}</h3>
+                @if($package->total_score && $package->total_rating)
                 <div class="review">
                     <div class="set">
                     @php
@@ -28,6 +29,13 @@
                     </div>
                     <span>({{ $average_rating }} out of 5 )</span>
                 </div>
+                @else
+                <div class="review">
+                    @for($i=1; $i<=5; $i++)
+                    <i class="far fa-star"></i>
+                    @endfor
+                </div>
+                @endif
                 <div class="price">
                     {{ $package->price }} @if($package->old_price != '') <del>{{ $package->old_price }}</del> @endif
                 </div>
@@ -51,12 +59,16 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="tab-1" data-bs-toggle="tab" data-bs-target="#tab-1-pane" type="button" role="tab" aria-controls="tab-1-pane" aria-selected="true">Detail</button>
                         </li>
+                        @if($package_itineraries->count() > 0)
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="tab-2" data-bs-toggle="tab" data-bs-target="#tab-2-pane" type="button" role="tab" aria-controls="tab-2-pane" aria-selected="false">Tour Plan</button>
                         </li>
+                        @endif
+                        @if($package->map != '')
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="tab-3" data-bs-toggle="tab" data-bs-target="#tab-3-pane" type="button" role="tab" aria-controls="tab-3-pane" aria-selected="false">Location</button>
                         </li>
+                        @endif
                         @if($package_videos->count() > 0 || $package_photos->count() > 0)
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="tab-4" data-bs-toggle="tab" data-bs-target="#tab-4-pane" type="button" role="tab" aria-controls="tab-4-pane" aria-selected="false">Gallery</button>
@@ -85,7 +97,7 @@
                         <div class="tab-pane fade show active" id="tab-1-pane" role="tabpanel" aria-labelledby="tab-1" tabindex="0">
                             <h2 class="mt_30">Detail</h2>
                             <p>{!! $package->description !!}</p>
-
+                            @if($package_amenities_include->count() > 0)
                             <h2 class="mt_30">Includes</h2>
                             <div class="amenity">
                                 <div class="row">
@@ -96,7 +108,7 @@
                                     @endforeach
                                 </div>
                             </div>
-
+                            @endif
                             @if($package_amenities_exclude->count() > 0)
                             <h2 class="mt_30">Excludes</h2>
                             <div class="amenity">
@@ -216,7 +228,7 @@
                         <div class="tab-pane fade" id="tab-6-pane" role="tabpanel" aria-labelledby="tab-6" tabindex="0">
                             <div class="review-package">
                                 <h2>Reviews</h2>
-
+                                @if($reviews->count() > 0)
                                 @foreach($reviews as $review)
                                 <div class="review-package-section">
                                     <div class="review-package-box d-flex justify-content-start">
@@ -248,7 +260,9 @@
                                     </div>
                                 </div>
                                 @endforeach
-
+                                @else
+                                <div class="alert alert-warning">No reviews found.</div>
+                                @endif
                                 
 
                                 <div class="mt_40"></div>
@@ -356,7 +370,8 @@
                                 @csrf
                                 <input type="hidden" name="package_id" value="{{ $package->id }}">
                                 <div class="row">
-
+                                    
+                                    @if($tours->count() > 0)
                                     {{-- Tour List --}}
                                     <div class="col-md-8">
                                         @php
@@ -426,7 +441,7 @@
                                             </div>
                                         @endforeach
                                     </div>
-
+                                    @endif
                                     {{-- Payment Section --}}
                                     @if($active_tours->isNotEmpty())
                                     <div class="col-md-4">

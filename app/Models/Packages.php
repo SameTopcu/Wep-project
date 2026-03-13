@@ -44,4 +44,7 @@ class Packages extends Model
     public function package_amenities(){
         return $this->hasMany(PackageAmenity::class, 'package_id');
     }
+    public function wishlists(){
+        return $this->hasMany(Wishlist::class, 'package_id');
+    }
 }
