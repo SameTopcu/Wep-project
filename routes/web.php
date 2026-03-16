@@ -20,6 +20,10 @@ use App\Http\Controllers\Admin\AdminAmenityController;
 use App\Http\Controllers\Admin\AdminTourController;
 use App\Http\Controllers\Admin\AdminReviewController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminSubscriberController;
+use App\Http\Controllers\Admin\AdminHomeItemController;
+
+
 // Front Routes
 Route::get('/',[FrontController::class,'home'])->name('home');
 Route::get('/about',[FrontController::class,'about'])->name('about');
@@ -258,5 +262,15 @@ Route::prefix('admin')->group(callback: function () {
     Route::get('/message',[AdminUserController::class,'message'])->name('admin_message');
     Route::get('/message-detail/{id}',[AdminUserController::class,'message_detail'])->name('admin_message_detail');
     Route::post('/message-reply/{id}',[AdminUserController::class,'message_reply'])->name('admin_message_reply');
+
+    //subscriber routes : 
+    Route::get('/subscribers',[AdminSubscriberController::class,'subscribers'])->name('admin_subscribers');
+    Route::get('/subscribers/send-email',[AdminSubscriberController::class,'send_email'])->name('admin_subscribers_send_email');
+    Route::post('/subscribers/send-email',[AdminSubscriberController::class,'send_email_submit'])->name('admin_subscribers_send_email_submit');
+    Route::get('/subscribers/delete/{id}',[AdminSubscriberController::class,'subscriber_delete'])->name('admin_subscribers_delete');
+
+    //home item routes : 
+    Route::get('/home-item/index',[AdminHomeItemController::class,'index'])->name('admin_home_item_index');
+    Route::post('/home-item/update',[AdminHomeItemController::class,'update'])->name('admin_home_item_update');
 });
 

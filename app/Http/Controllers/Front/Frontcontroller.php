@@ -34,6 +34,7 @@ use App\Models\Review;
 use App\Models\Wishlist;
 use App\Models\Subscriber;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
+use App\Models\HomeItem; 
 
 
 class Frontcontroller extends Controller
@@ -46,8 +47,26 @@ class Frontcontroller extends Controller
         $testimonials = Testimonial::get();
         $destinations = Destination::orderBy('view_count','desc')->get()->take(8);
         $posts = Post::with('blog_category')->orderBy('id','desc')->get()->take(3);
-        $packages = Packages::orderBy('id','desc')->get()->take(3);
-        return view("front.home",compact('sliders','welcome_item','features','counter_item','testimonials','posts','destinations','packages'));
+        $packages = Packages::with('destination', 'package_amenities', 'package_itineraries', 'tours', 'reviews')->orderBy('id','desc')->get()->take(3);
+        $home_item = HomeItem::firstOrCreate(
+            ['id' => 1],
+            [
+                'destination_heading' => 'Discover Our Destinations',
+                'destination_subheading' => 'Explore the world with us',
+                'destination_status' => 'Show',
+                'feature_status' => 'Show',
+                'package_heading' => 'Popular Packages',
+                'package_subheading' => 'Explore our most popular travel packages around the world',
+                'package_status' => 'Show',
+                'testimonial_heading' => 'Client Testimonials',
+                'testimonial_subheading' => 'See what our clients have to say about their experience with us',
+                'testimonial_status' => 'Show',
+                'blog_heading' => 'Latest News',
+                'blog_subheading' => 'Check out the latest news and updates from our blog post',
+                'blog_status' => 'Show',
+            ]
+        );
+        return view("front.home",compact('sliders','welcome_item','features','counter_item','testimonials','posts','destinations','packages','home_item'));
     }
 
     public function about(){

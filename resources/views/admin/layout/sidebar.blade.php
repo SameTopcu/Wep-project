@@ -73,6 +73,28 @@
                         </ul>
                     </li>
 
+
+                    <li class="nav-item dropdown {{ Request::is('admin/subscribers') ? 'active' : '' }}">
+                        <a href="#" class="nav-link has-dropdown">
+                            <i class="fas fa-hand-point-right"></i>
+                            <span>Subscriber Section</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="{{ Request::is('admin/subscribers') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('admin_subscribers') }}">
+                                    <i class="fas fa-angle-right"></i> All subscribers 
+                                </a>
+                            </li>
+                            <li class="">
+                                <a class="nav-link" href="{{ route('admin_subscribers_send_email') }}">
+                                    <i class="fas fa-angle-right"></i> Send Email
+                                </a>
+                            </li> 
+                        </ul>
+                    </li>
+
+                    <li class="{{ Request::is('admin/home-item/*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin_home_item_index') }}"><i class="fas fa-hand-point-right"></i> <span>Home Item</span></a></li>
+
                     <li class="{{ Request::is('admin/profile') ? 'active' : ''}}"><a class="nav-link" href="{{ route('admin_profile') }}"><i class="fas fa-hand-point-right"></i> <span>Profile</span></a></li>
 
 
