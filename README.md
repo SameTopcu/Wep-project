@@ -1,59 +1,87 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Travel Agency Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive Travel Agency and Tour Booking Management System built with Laravel. This platform provides a complete solution for managing travel destinations, tour packages, bookings, customer interactions, and more.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Frontend (User Facing)
+- **Dynamic Home Page:** Customizable sections (Destinations, Packages, Testimonials, Blog, Features) managed directly from the admin panel.
+- **Destinations & Packages:** Browse various travel destinations and explore detailed tour packages.
+- **Advanced Filtering:** Filter packages by name, price range, destination, and review ratings.
+- **Package Details:** View itineraries, photo/video galleries, included/excluded amenities, FAQs, and interactive maps.
+- **Booking System:** Seamless booking flow with real-time seat availability checks.
+- **Payment Integration:** Secure payments via Stripe, PayPal, or Cash.
+- **Reviews & Ratings:** Customers can leave ratings and comments on completed tours.
+- **Blog & News:** Read the latest updates and travel tips.
+- **Wishlist:** Save favorite packages for later.
+- **Newsletter Subscription:** Subscribe to get the latest travel news (with email verification).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### User Panel (Customer Dashboard)
+- **Profile Management:** Update personal information and profile picture.
+- **My Bookings & Invoices:** Track booking history, payment status, and download/print dynamic invoices.
+- **My Reviews:** View and manage submitted reviews.
+- **My Wishlist:** Quick access to saved packages.
+- **Messaging System:** Direct communication channel with the admin team.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Admin Panel (Management Dashboard)
+- **Home Page Items:** Dynamically update headings, subheadings, and section visibility on the frontend.
+- **Destinations Management:** Add, edit, and delete destinations with associated media.
+- **Packages & Tours Management:** Create detailed packages, manage daily itineraries, FAQs, media, and schedule multiple tours under a package.
+- **Booking Management:** Track all customer bookings, payment statuses (Pending/Completed), and manage cancellations.
+- **User Management:** View registered users and their activities.
+- **Review & Message Management:** Moderate user reviews, view incoming customer messages, and reply directly via email.
+- **Newsletter / Subscribers:** Manage email subscribers and send bulk promotional emails.
+- **Blog Management:** Manage blog categories and posts.
+- **General Settings:** Manage sliders, features, testimonials, FAQs, and counter items.
 
-## Learning Laravel
+## Technologies Used
+- **Backend:** Laravel (PHP)
+- **Database:** MySQL
+- **Frontend:** Blade Templating, HTML5, CSS3, Bootstrap, jQuery, Select2, Owl Carousel, SweetAlert2
+- **Payment Gateways:** Stripe API, PayPal API
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Installation & Setup
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/SameTopcu/Wep-project.git
+   cd Wep-project
+   ```
 
-## Laravel Sponsors
+2. **Install dependencies**
+   ```bash
+   composer install
+   npm install
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+3. **Environment Setup**
+   Copy the `.env.example` file to `.env` and configure your database, mail, and payment gateway credentials.
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-### Premium Partners
+4. **Database Migration & Seeding**
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+5. **Storage Link**
+   ```bash
+   php artisan storage:link
+   ```
 
-## Contributing
+6. **Run the Application**
+   ```bash
+   php artisan serve
+   ```
+   *For frontend assets compiling, run: `npm run dev` or `npm run build`*
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Security
+- Sensitive credentials (Stripe, PayPal) should be kept strictly in `.env`.
+- Cross-Site Request Forgery (CSRF) protection is enabled on all forms.
+- SQL Injection protection via Laravel Eloquent ORM.
 
 ## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
