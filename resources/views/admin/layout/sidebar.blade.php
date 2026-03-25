@@ -95,6 +95,8 @@
 
                     <li class="{{ Request::is('admin/home-item/*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin_home_item_index') }}"><i class="fas fa-hand-point-right"></i> <span>Home Item</span></a></li>
 
+                    <li class="{{ Request::is('admin/setting/*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin_setting_index') }}"><i class="fas fa-hand-point-right"></i> <span>Setting</span></a></li>
+
                     <li class="{{ Request::is('admin/profile') ? 'active' : ''}}"><a class="nav-link" href="{{ route('admin_profile') }}"><i class="fas fa-hand-point-right"></i> <span>Profile</span></a></li>
 
 

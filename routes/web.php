@@ -24,6 +24,8 @@ use App\Http\Controllers\Admin\AdminSubscriberController;
 use App\Http\Controllers\Admin\AdminHomeItemController;
 
 
+use App\Http\Controllers\Admin\AdminSettingController;
+
 // Front Routes
 Route::get('/',[FrontController::class,'home'])->name('home');
 Route::get('/about',[FrontController::class,'about'])->name('about');
@@ -33,6 +35,8 @@ Route::get('/registration',[FrontController::class,'registration'])->name('regis
 Route::get('/login',[FrontController::class,'login'])->name('login');
 Route::post('/login',[FrontController::class,'login_submit'])->name('login_submit');
 Route::get('/faq',[FrontController::class,'faq'])->name('faq');
+Route::view('/terms', 'front.terms')->name('terms');
+Route::view('/privacy', 'front.privacy')->name('privacy');
 Route::get('/blog',[FrontController::class,'blog'])->name('blog');
 Route::get('/post/{slug}',[FrontController::class,'post'])->name('post');
 Route::get('/category/{slug}',[FrontController::class,'category'])->name('category');
@@ -272,5 +276,9 @@ Route::prefix('admin')->group(callback: function () {
     //home item routes : 
     Route::get('/home-item/index',[AdminHomeItemController::class,'index'])->name('admin_home_item_index');
     Route::post('/home-item/update',[AdminHomeItemController::class,'update'])->name('admin_home_item_update');
+
+    //setting routes : 
+    Route::get('/setting/index',[AdminSettingController::class,'index'])->name('admin_setting_index');
+    Route::post('/setting/update',[AdminSettingController::class,'update'])->name('admin_setting_update');
 });
 

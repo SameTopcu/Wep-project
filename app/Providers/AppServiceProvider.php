@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use App\Models\Setting;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,5 +22,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrap();
+        
+        view()->composer('front.layout.master', function ($view) {
+            $setting = Setting::firstOrCreate(['id' => 1]);
+            $view->with('setting', $setting);
+        });
     }
 }
+

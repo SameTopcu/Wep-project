@@ -83,10 +83,10 @@
                         <div class="item pb_50">
                             <h2 class="heading">Important Pages</h2>
                             <ul class="useful-links">
-                                <li><a href="index.html"><i class="fas fa-angle-right"></i> Home</a></li>
-                                <li><a href="destinations.html"><i class="fas fa-angle-right"></i> Destinations</a></li>
-                                <li><a href="packages.html"><i class="fas fa-angle-right"></i> Packages</a></li>
-                                <li><a href="blog.html"><i class="fas fa-angle-right"></i> Blog</a></li>
+                                <li><a href="{{ route('home') }}"><i class="fas fa-angle-right"></i> Home</a></li>
+                                <li><a href="{{ route('destinations') }}"><i class="fas fa-angle-right"></i> Destinations</a></li>
+                                <li><a href="{{ route('blog') }}"><i class="fas fa-angle-right"></i> Blog</a></li>
+                                <li><a href="{{ route('about') }}"><i class="fas fa-angle-right"></i> About</a></li>
                             </ul>
                         </div>
                     </div>
@@ -94,10 +94,9 @@
                         <div class="item pb_50">
                             <h2 class="heading">Useful Links</h2>
                             <ul class="useful-links">
-                                <li><a href="faq.html"><i class="fas fa-angle-right"></i> FAQ</a></li>
-                                <li><a href="terms.html"><i class="fas fa-angle-right"></i> Terms of Use</a></li>
-                                <li><a href="privacy.html"><i class="fas fa-angle-right"></i> Privacy Policy</a></li>
-                                <li><a href="contact.html"><i class="fas fa-angle-right"></i> Contact</a></li>
+                            <li><a href="{{ route('faq') }}"><i class="fas fa-angle-right"></i> FAQ</a></li>
+                            <li><a href="{{ route('packages') }}"><i class="fas fa-angle-right"></i> Packages</a></li>
+                            <li><a href="{{ $setting->footer_email ? 'mailto:' . $setting->footer_email : '#' }}"><i class="fas fa-angle-right"></i> Contact</a></li>
                             </ul>
                         </div>
                     </div>
@@ -110,27 +109,37 @@
                                     <i class="fas fa-map-marker-alt"></i>
                                 </div>
                                 <div class="right">
-                                    34 Antiger Lane, USA, 12937
+                                    {{ $setting->footer_address }}
                                 </div>
                             </div>
                             <div class="list-item">
                                 <div class="left">
                                     <i class="fas fa-phone"></i>
                                 </div>
-                                <div class="right">contact@example.com</div>
+                                <div class="right">{{ $setting->footer_phone }}</div>
                             </div>
                             <div class="list-item">
                                 <div class="left">
                                     <i class="fas fa-envelope"></i>
                                 </div>
-                                <div class="right">122-222-1212</div>
+                                <div class="right">{{ $setting->footer_email }}</div>
                             </div>
                             <ul class="social">
-                                <li><a href=""><i class="fab fa-facebook-f"></i></a></li>
-                                <li><a href=""><i class="fab fa-twitter"></i></a></li>
-                                <li><a href=""><i class="fab fa-youtube"></i></a></li>
-                                <li><a href=""><i class="fab fa-linkedin-in"></i></a></li>
-                                <li><a href=""><i class="fab fa-instagram"></i></a></li>
+                                @if($setting->facebook)
+                                <li><a href="{{ $setting->facebook }}"><i class="fab fa-facebook-f"></i></a></li>
+                                @endif
+                                @if($setting->twitter)
+                                <li><a href="{{ $setting->twitter }}"><i class="fab fa-twitter"></i></a></li>
+                                @endif
+                                @if($setting->youtube)
+                                <li><a href="{{ $setting->youtube }}"><i class="fab fa-youtube"></i></a></li>
+                                @endif
+                                @if($setting->linkedin)
+                                <li><a href="{{ $setting->linkedin }}"><i class="fab fa-linkedin-in"></i></a></li>
+                                @endif
+                                @if($setting->instagram)
+                                <li><a href="{{ $setting->instagram }}"><i class="fab fa-instagram"></i></a></li>
+                                @endif
                             </ul>
                         </div>
                     </div>
@@ -162,7 +171,7 @@
                 <div class="row">
                     <div class="col-lg-12 col-md-12">
                         <div class="copyright">
-                            Copyright &copy; 2024, TripSummit. All Rights Reserved.
+                            {!! $setting->footer_copyright !!}
                         </div>
                     </div>
                 </div>
